@@ -1,0 +1,42 @@
+#letterboxd-widget {
+  background-color: #1a2127;
+
+  ul {
+    list-style: none;
+    padding: 0;
+
+    li.letterboxd-diary-entry {
+      display: flex;
+      padding: 30px 10px;
+      border-bottom: 2px solid #789;
+
+      .letterboxd-date {
+        display: inline-grid;
+        text-align: center;
+        grid-template-rows: [top] 15px [month] min-content [gap] 2px [year] min-content auto [bottom];
+
+        svg {
+          grid-column: 1;
+          grid-row: top / bottom;
+          fill: #456;
+        }
+
+        .letterboxd-year {
+          font-size: .6875rem;
+          grid-row: year;
+        }
+
+        .letterboxd-day-month {
+          font-size: 1rem;
+          grid-row: month;
+        }
+
+        .letterboxd-day-month,
+        .letterboxd-year {
+          grid-column: 1;
+          color: #def;
+        }
+      }
+    }
+  }
+}
