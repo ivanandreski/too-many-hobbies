@@ -36,7 +36,7 @@ window.onload = async () => {
 
 const parseJson = async () => {
   try {
-    const response = await fetch("./data/diary.json");
+    const response = await fetch("../../data/diary.json");
     return (await response.json())["data"];
   } catch (e) {
     console.error(e);

@@ -9,7 +9,7 @@
 
     li.letterboxd-diary-entry {
       display: flex;
-      padding: 20px 5px;
+      padding: 10px 3px;
       border-bottom: 2px solid #789;
 
       .movie-cell {
@@ -54,7 +54,7 @@
         width: 10%;
 
         img {
-          width: 60px;
+          width: 35px;
         }
       }
 
