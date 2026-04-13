@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="index.css">
   </link>
   <script>
-    var ENV_PROD = true;
+    var ENV_PROD = location.hostname !== "localhost";;
   </script>
   <script type="module" src="index.js"></script>
   <script src="util.js"></script>
