@@ -1,5 +1,8 @@
-import {init as letterboxdInit} from "./widgets/letterboxd/letterboxd.js";
+import {init as letterboxdInit, initFavorites} from "./widgets/letterboxd/letterboxd.js";
 
 window.onload = async () => {
-  await letterboxdInit();
+  await Promise.all([
+    letterboxdInit(),
+    initFavorites(),
+  ]);
 }

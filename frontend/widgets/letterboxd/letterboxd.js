@@ -49,3 +49,19 @@ const renderRatings = (clone, rating) => {
   }
 }
 
+export const initFavorites = async () => {
+  const favoritesList = await parseJson("../../data/favorites.json");
+
+  const templateEl = document.getElementById("letterboxd-favorites-template");
+  favoritesList.forEach(movie => {
+    const clone = document.importNode(templateEl.content, true);
+
+    const entryEl = clone.querySelector("div");
+    const imgEl = document.createElement("img");
+    imgEl.src = movie.poster;
+    entryEl.appendChild(imgEl);
+
+    templateEl.parentNode.appendChild(clone);
+  });
+}
+

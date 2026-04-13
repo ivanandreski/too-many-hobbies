@@ -6,12 +6,55 @@ body {
   max-width: 1600px;
   margin: 0 auto;
   padding: 1rem;
+  font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", Segoe UI Symbol, "Noto Color Emoji";
 }
 
 .widget {
   border-radius: .75rem;
 }
 
-#widget-letterboxd {
-  width: 50%;
+#welcome-container {
+  text-align: center;
+  margin: 0 auto;
+  padding: 4rem 1.5rem;
+  max-width: 48rem;
+
+  h1 {
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+    font-weight: bold;
+    letter-spacing: -0.025em;
+    margin-bottom: 1rem;
+  }
+
+  p {
+    line-height: 1.625;
+    font-size: 1.125rem;
+  }
+}
+
+#widgets-container {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2rem;
+
+  .widget-container {
+    /* width: 50%; */
+  }
+}
+
+.widget-summary {
+  h2 {
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+    font-weight: bold;
+    letter-spacing: -0.025em;
+    color: hsl(var(--foreground));
+    margin-bottom: 1rem;
+  }
+
+  p {
+    line-height: 1.625;
+    font-size: 1.125rem;
+  }
 }
