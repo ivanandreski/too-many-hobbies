@@ -1,0 +1,61 @@
+#widget-gear {
+
+  .widget-gear-entry {
+    display: flex;
+    gap: 1.25rem;
+    align-items: center;
+    margin-bottom: 1rem;
+
+    &:nth-child(even) {
+      flex-direction: row;
+    }
+
+    &:nth-child(odd) {
+      flex-direction: row-reverse;
+    }
+
+    .widget-gear-entry-image-container {
+      width: 12rem;
+      height: 9rem;
+      border-radius: .75rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-shrink: 0;
+      overflow: hidden;
+      border: 1px solid black;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+
+    .widget-gear-entry-content-container {
+      flex: 1 1 0%;
+      min-width: 0px;
+
+      .bike-type-title, .bike-milage-title {
+        letter-spacing: .1em;
+        text-transform: uppercase;
+        font-weight: 500;
+        font-size: 12px;
+        margin-bottom: .25rem;
+      }
+
+      .bike-name-title {
+        font-size: 1rem;
+        line-height: 1.5rem;
+        margin-bottom: .375rem;
+        margin: 0;
+      }
+
+      .bike-description {
+        line-height: 1.625;
+        font-size: .875rem;
+        margin: 0;
+      }
+    }
+  }
+}

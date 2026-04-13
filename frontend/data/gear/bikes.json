@@ -1,0 +1,13 @@
+{
+  "data": {
+    "mainBike": {
+      "name": "Trek Emonda S",
+      "milage": 1002.7
+    },
+    "commuter": {
+      "name": "ROG Elite",
+      "milage": 795,
+      "image": "https://www.njuskalo.hr/image-w920x690/cestovni-bicikli/rog-elite-slika-180379053.jpg"
+    }
+  }
+}
