@@ -1,5 +1,5 @@
-export const init = async () => {
-  const diaryList = await parseJson("../../data/diary.json");
+const initDiary = async () => {
+  const diaryList = await parseJson("../../data/movies/diary.json");
 
   const templateEl = document.getElementById("letterboxd-widget-template");
   diaryList.forEach(movie => {
@@ -49,8 +49,8 @@ const renderRatings = (clone, rating) => {
   }
 }
 
-export const initFavorites = async () => {
-  const favoritesList = await parseJson("../../data/favorites.json");
+const initFavorites = async () => {
+  const favoritesList = await parseJson("../../data/movies/favorites.json");
 
   const templateEl = document.getElementById("letterboxd-favorites-template");
   favoritesList.forEach(movie => {
@@ -63,5 +63,14 @@ export const initFavorites = async () => {
 
     templateEl.parentNode.appendChild(clone);
   });
+}
+
+export const LetterboxdData = {
+  init: async () => {
+    await Promise.all([
+      initDiary(),
+      initFavorites(),
+    ]);
+  }
 }
 
