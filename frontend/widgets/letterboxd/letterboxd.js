@@ -1,5 +1,5 @@
 export const init = async () => {
-  const diaryList = await parseJson();
+  const diaryList = await parseJson("../../data/diary.json");
 
   const templateEl = document.getElementById("letterboxd-widget-template");
   diaryList.forEach(movie => {
@@ -20,7 +20,7 @@ export const init = async () => {
     const releaseYearEl = clone.querySelector(".movie-release-year");
     releaseYearEl.innerText = movie.releaseYear;
 
-    // TODO: render ratings
+    renderRatings(clone, movie.rating);
 
     if (movie.like) {
       const likeEl = clone.querySelector(".movie-like");
@@ -34,12 +34,18 @@ export const init = async () => {
   });
 }
 
-const parseJson = async () => {
-  try {
-    const response = await fetch("../../data/diary.json");
-    return (await response.json())["data"];
-  } catch (e) {
-    console.error(e);
-    return [];
+const renderRatings = (clone, rating) => {
+  const ratingEl = clone.querySelector(".movie-rating");
+  for (let i = 0; i < parseInt(rating); i++) {
+    const starEl = document.createElement('span');
+    starEl.className = "fa fa-star";
+    ratingEl.appendChild(starEl);
+  }
+
+  if (rating % 2 !== 0) {
+    const starEl = document.createElement('span');
+    starEl.className = "fa fa-star-half";
+    ratingEl.appendChild(starEl);
   }
 }
+

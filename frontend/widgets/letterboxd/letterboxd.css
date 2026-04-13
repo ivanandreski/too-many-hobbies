@@ -136,6 +136,7 @@
         width: 10%;
 
         .checked,
+        .fa-star,
         .fa-star-half {
           color: var(--color-letterboxd-green);
         }

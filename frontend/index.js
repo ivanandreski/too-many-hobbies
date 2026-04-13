@@ -1,4 +1,4 @@
-import {init as letterboxdInit} from "./widgets/letterboxd/diary.js";
+import {init as letterboxdInit} from "./widgets/letterboxd/letterboxd.js";
 
 window.onload = async () => {
   await letterboxdInit();
