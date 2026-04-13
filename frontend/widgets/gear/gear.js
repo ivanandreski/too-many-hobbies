@@ -1,5 +1,5 @@
 const initGear = async () => {
-  const gearData = await parseJson("../../data/gear/bikes.json");
+  const gearData = await fetchJsonData("/data/gear/bikes.json");
 
   const mainBikeEntryEl = document.getElementById("main-bike-entry");
   renderBikeData(mainBikeEntryEl, gearData["mainBike"]);

@@ -1,5 +1,5 @@
 const initDiary = async () => {
-  const diaryList = await parseJson("../../data/movies/diary.json");
+  const diaryList = await fetchJsonData("/data/movies/diary.json");
 
   const templateEl = document.getElementById("letterboxd-widget-template");
   diaryList.forEach(movie => {
@@ -50,7 +50,7 @@ const renderRatings = (clone, rating) => {
 }
 
 const initFavorites = async () => {
-  const favoritesList = await parseJson("../../data/movies/favorites.json");
+  const favoritesList = await fetchJsonData("/data/movies/favorites.json");
 
   const templateEl = document.getElementById("letterboxd-favorites-template");
   favoritesList.forEach(movie => {
