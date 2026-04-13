@@ -1,4 +1,4 @@
-window.onload = async () => {
+export const init = async () => {
   const diaryList = await parseJson();
 
   const templateEl = document.getElementById("letterboxd-widget-template");

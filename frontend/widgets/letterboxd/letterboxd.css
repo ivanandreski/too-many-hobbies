@@ -1,6 +1,64 @@
-#letterboxd-widget {
+#widget-letterboxd {
+  --color-letterboxd-orange: rgb(255, 128, 0);
+  --color-letterboxd-green: rgb(0, 224, 84);
+  --color-letterboxd-blue: rgb(64, 188, 244);
+  --color-letterboxd-text: rgb(153, 170, 187);
+
+  #widget-letterboxd-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid rgb(44, 52, 64);
+
+    #letterboxd-logo-container {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+
+      #letterboxd-logo {
+        display: flex;
+        gap: 0.125rem;
+
+        .letterboxd-logo-circle {
+          width: 0.75rem;
+          height: 0.75rem;
+          border-radius: 9999px;
+
+          &:nth-child(1) {
+            background-color: var(--color-letterboxd-orange);
+          }
+
+          &:nth-child(2) {
+            background-color: var(--color-letterboxd-green);
+          }
+
+          &:nth-child(3) {
+            background-color: var(--color-letterboxd-blue);
+          }
+        }
+      }
+    }
+
+    #letterboxd-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: white;
+      margin: 0;
+    }
+
+    #letterboxd-subtitle {
+      font-size: .75rem;
+      line-height: 1rem;
+      color: var(--color-letterboxd-text);
+      margin: 0;
+    }
+  }
+
   background-color: #1a2127;
-  font-family: TiemposTextWeb, Georgia, serif;
+  font-family: TiemposTextWeb,
+  Georgia,
+  serif;
 
   ul {
     list-style: none;
@@ -10,7 +68,7 @@
     li.letterboxd-diary-entry {
       display: flex;
       padding: 10px 3px;
-      border-bottom: 2px solid #789;
+      border-bottom: 1px solid rgb(44, 52, 64);
 
       .movie-cell {
         display: flex;
@@ -19,7 +77,7 @@
       }
 
       .movie-date {
-        width: 10%;
+        width: 15%;
 
         .letterboxd-date {
           display: inline-grid;
@@ -75,11 +133,11 @@
       }
 
       .movie-rating {
-        width: 15%;
+        width: 10%;
 
         .checked,
         .fa-star-half {
-          color: #00e054;
+          color: var(--color-letterboxd-green);
         }
       }
 
@@ -87,7 +145,7 @@
         width: 5%;
 
         .fa-heart {
-          color: #ff9010
+          color: var(--color-letterboxd-orange);
         }
       }
     }
