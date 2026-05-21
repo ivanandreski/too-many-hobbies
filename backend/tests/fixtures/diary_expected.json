@@ -1,0 +1,454 @@
+{
+  "data": [
+    {
+      "name": "Terror by Night",
+      "releaseYear": 1946,
+      "rating": 3.5,
+      "like": true,
+      "dateWatched": "Wed, 8 Apr 2026 08:32:28 +1200",
+      "poster": "https://a.ltrbxd.com/resized/film-poster/3/9/0/3/3/39033-terror-by-night-0-600-0-900-crop.jpg?v=74be997d34",
+      "url": "https://letterboxd.com/film/terror-by-night/"
+    },
+    {
+      "name": "Pursuit to Algiers",
+      "releaseYear": 1945,
+      "rating": 3.5,
+      "like": true,
+      "dateWatched": "Tue, 7 Apr 2026 08:42:38 +1200",
+      "poster": "https://a.ltrbxd.com/resized/film-poster/1/5/2/7/4/15274-pursuit-to-algiers-0-600-0-900-crop.jpg?v=9c61989adf",
+      "url": "https://letterboxd.com/film/pursuit-to-algiers/"
+    },
+    {
+      "name": "The Woman in Green",
+      "releaseYear": 1945,
+      "rating": 2.5,
+      "like": false,
+      "dateWatched": "Fri, 3 Apr 2026 08:43:39 +1300",
+      "poster": "https://a.ltrbxd.com/resized/film-poster/2/9/2/1/6/29216-the-woman-in-green-0-600-0-900-crop.jpg?v=0969bd7389",
+      "url": "https://letterboxd.com/film/the-woman-in-green/"
+    },
+    {
+      "name": "The House of Fear",
+      "releaseYear": 1945,
+      "rating": 3.5,
+      "like": true,
+      "dateWatched": "Wed, 1 Apr 2026 09:26:14 +1300",
+      "poster": "https://a.ltrbxd.com/resized/film-poster/2/9/8/0/0/29800-the-house-of-fear-0-600-0-900-crop.jpg?v=8ecfb9d638",
+      "url": "https://letterboxd.com/film/the-house-of-fear/"
+    },
+    {
+      "name": "The Spider Woman Strikes Back",
+      "releaseYear": 1946,
+      "rating": 2.0,
+      "like": true,
+      "dateWatched": "Tue, 31 Mar 2026 09:35:08 +1300",
+      "poster": "https://a.ltrbxd.com/resized/film-poster/7/5/7/6/4/75764-the-spider-woman-strikes-back-0-600-0-900-crop.jpg?v=838e4fc171",
+      "url": "https://letterboxd.com/film/the-spider-woman-strikes-back/"
+    },
+    {
+      "name": "The Pearl of Death",
+      "releaseYear": 1944,
+      "rating": 3.5,
+      "like": true,
+      "dateWatched": "Tue, 31 Mar 2026 08:30:18 +1300",
+      "poster": "https://a.ltrbxd.com/resized/film-poster/2/9/7/9/8/29798-the-pearl-of-death-0-600-0-900-crop.jpg?v=d73598c255",
+      "url": "https://letterboxd.com/film/the-pearl-of-death/"
+    },
+    {
+      "name": "The Scarlet Claw",
+      "releaseYear": 1944,
+      "rating": 4.0,
+      "like": true,
+      "dateWatched": "Mon, 30 Mar 2026 09:42:25 +1300",
+      "poster": "https://a.ltrbxd.com/resized/film-poster/2/9/7/9/6/29796-the-scarlet-claw-0-600-0-900-crop.jpg?v=a319254a2e",
+      "url": "https://letterboxd.com/film/the-scarlet-claw/"
+    },
+    {
+      "name": "Bad Boys",
+      "releaseYear": 1995,
+      "rating": 2.5,
+      "like": true,
+      "dateWatched": "Mon, 30 Mar 2026 08:32:00 +1300",
+      "poster": "https://a.ltrbxd.com/resized/film-poster/4/6/8/7/0/46870-bad-boys-0-600-0-900-crop.jpg?v=e93721d2e0",
+      "url": "https://letterboxd.com/film/bad-boys-1995/"
+    },
+    {
+      "name": "The Spider Woman",
+      "releaseYear": 1943,
+      "rating": 4.0,
+      "like": true,
+      "dateWatched": "Sun, 29 Mar 2026 10:51:38 +1300",
+      "poster": "https://a.ltrbxd.com/resized/film-poster/5/0/2/4/9/50249-the-spider-woman-0-600-0-900-crop.jpg?v=30529982f4",
+      "url": "https://letterboxd.com/film/the-spider-woman/"
+    },
+    {
+      "name": "The War of the Roses",
+      "releaseYear": 1989,
+      "rating": 3.5,
+      "like": true,
+      "dateWatched": "Sun, 29 Mar 2026 05:00:38 +1300",
+      "poster": "https://a.ltrbxd.com/resized/film-poster/5/1/8/0/7/51807-the-war-of-the-roses-0-600-0-900-crop.jpg?v=07db296068",
+      "url": "https://letterboxd.com/film/the-war-of-the-roses/"
+    },
+    {
+      "name": "Sherlock Holmes Faces Death",
+      "releaseYear": 1943,
+      "rating": 3.0,
+      "like": true,
+      "dateWatched": "Fri, 27 Mar 2026 11:05:35 +1300",
+      "poster": "https://a.ltrbxd.com/resized/film-poster/1/5/1/3/6/15136-sherlock-holmes-faces-death-0-600-0-900-crop.jpg?v=f3dd36a604",
+      "url": "https://letterboxd.com/film/sherlock-holmes-faces-death/"
+    },
+    {
+      "name": "Sherlock Holmes in Washington",
+      "releaseYear": 1943,
+      "rating": 3.5,
+      "like": true,
+      "dateWatched": "Wed, 25 Mar 2026 22:40:46 +1300",
+      "poster": "https://a.ltrbxd.com/resized/film-poster/2/0/7/9/2/20792-sherlock-holmes-in-washington-0-600-0-900-crop.jpg?v=f3de917236",
+      "url": "https://letterboxd.com/film/sherlock-holmes-in-washington/"
+    },
+    {
+      "name": "Sherlock Holmes and the Secret Weapon",
+      "releaseYear": 1942,
+      "rating": 3.0,
+      "like": true,
+      "dateWatched": "Tue, 24 Mar 2026 10:39:23 +1300",
+      "poster": "https://a.ltrbxd.com/resized/film-poster/4/0/1/4/9/40149-sherlock-holmes-and-the-secret-weapon-0-600-0-900-crop.jpg?v=6cf000b57d",
+      "url": "https://letterboxd.com/film/sherlock-holmes-and-the-secret-weapon/"
+    },
+    {
+      "name": "The Adventures of Sherlock Holmes",
+      "releaseYear": 1939,
+      "rating": 4.0,
+      "like": true,
+      "dateWatched": "Mon, 23 Mar 2026 11:54:11 +1300",
+      "poster": "https://a.ltrbxd.com/resized/film-poster/4/0/9/8/3/40983-the-adventures-of-sherlock-holmes-0-600-0-900-crop.jpg?v=b3a803097f",
+      "url": "https://letterboxd.com/film/the-adventures-of-sherlock-holmes/"
+    },
+    {
+      "name": "Zero Dark Thirty",
+      "releaseYear": 2012,
+      "rating": 3.5,
+      "like": true,
+      "dateWatched": "Mon, 23 Mar 2026 07:07:14 +1300",
+      "poster": "https://a.ltrbxd.com/resized/film-poster/8/0/3/4/9/80349-zero-dark-thirty-0-600-0-900-crop.jpg?v=9d9601323b",
+      "url": "https://letterboxd.com/film/zero-dark-thirty/"
+    },
+    {
+      "name": "Sherlock Holmes and the Voice of Terror",
+      "releaseYear": 1942,
+      "rating": 3.0,
+      "like": true,
+      "dateWatched": "Sun, 22 Mar 2026 10:27:08 +1300",
+      "poster": "https://a.ltrbxd.com/resized/film-poster/3/4/7/8/9/34789-sherlock-holmes-and-the-voice-of-terror-0-600-0-900-crop.jpg?v=0be77792d1",
+      "url": "https://letterboxd.com/film/sherlock-holmes-and-the-voice-of-terror/"
+    },
+    {
+      "name": "RoboCop 3",
+      "releaseYear": 1993,
+      "rating": 2.0,
+      "like": true,
+      "dateWatched": "Sun, 22 Mar 2026 04:55:19 +1300",
+      "poster": "https://a.ltrbxd.com/resized/film-poster/4/8/7/9/5/48795-robocop-3-0-600-0-900-crop.jpg?v=2b9ece5cba",
+      "url": "https://letterboxd.com/film/robocop-3/"
+    },
+    {
+      "name": "Dressed to Kill",
+      "releaseYear": 1946,
+      "rating": 3.0,
+      "like": true,
+      "dateWatched": "Sat, 21 Mar 2026 10:30:17 +1300",
+      "poster": "https://a.ltrbxd.com/resized/film-poster/3/9/0/2/5/39025-dressed-to-kill-0-600-0-900-crop.jpg?v=33b8d81c2f",
+      "url": "https://letterboxd.com/film/dressed-to-kill-1946/"
+    },
+    {
+      "name": "RoboCop 2",
+      "releaseYear": 1990,
+      "rating": 3.0,
+      "like": true,
+      "dateWatched": "Sat, 21 Mar 2026 10:29:59 +1300",
+      "poster": "https://a.ltrbxd.com/resized/sm/upload/jl/e5/6p/d3/uJRmNEKXmpX1OSOP5u67MlSbfNx-0-600-0-900-crop.jpg?v=8e23382d86",
+      "url": "https://letterboxd.com/film/robocop-2/"
+    },
+    {
+      "name": "Batman: The Doom That Came to Gotham",
+      "releaseYear": 2023,
+      "rating": 2.0,
+      "like": false,
+      "dateWatched": "Thu, 19 Mar 2026 10:35:19 +1300",
+      "poster": "https://a.ltrbxd.com/resized/film-poster/9/0/4/1/2/1/904121-batman-the-doom-that-came-to-gotham-0-600-0-900-crop.jpg?v=c5d8fe2355",
+      "url": "https://letterboxd.com/film/batman-the-doom-that-came-to-gotham/"
+    },
+    {
+      "name": "RoboCop",
+      "releaseYear": 1987,
+      "rating": 4.0,
+      "like": true,
+      "dateWatched": "Thu, 19 Mar 2026 04:38:16 +1300",
+      "poster": "https://a.ltrbxd.com/resized/sm/upload/dz/ke/a9/9m/robocop-0-600-0-900-crop.jpg?v=46efa9f76c",
+      "url": "https://letterboxd.com/film/robocop/"
+    },
+    {
+      "name": "Batman: Gotham by Gaslight",
+      "releaseYear": 2018,
+      "rating": 3.5,
+      "like": true,
+      "dateWatched": "Tue, 17 Mar 2026 09:42:23 +1300",
+      "poster": "https://a.ltrbxd.com/resized/film-poster/4/0/2/8/9/6/402896-batman-gotham-by-gaslight-0-600-0-900-crop.jpg?v=febb68897b",
+      "url": "https://letterboxd.com/film/batman-gotham-by-gaslight/"
+    },
+    {
+      "name": "I Married a Witch",
+      "releaseYear": 1942,
+      "rating": 3.0,
+      "like": true,
+      "dateWatched": "Mon, 16 Mar 2026 10:10:41 +1300",
+      "poster": "https://a.ltrbxd.com/resized/film-poster/3/5/6/4/8/35648-i-married-a-witch-0-600-0-900-crop.jpg?v=fdaba31755",
+      "url": "https://letterboxd.com/film/i-married-a-witch/"
+    },
+    {
+      "name": "RocknRolla",
+      "releaseYear": 2008,
+      "rating": 2.0,
+      "like": false,
+      "dateWatched": "Mon, 16 Mar 2026 04:44:05 +1300",
+      "poster": "https://a.ltrbxd.com/resized/sm/upload/5x/bk/0s/eq/9tnHUDuUDrNJxJ3raxpKIrnYXlH-0-600-0-900-crop.jpg?v=9f2082aa13",
+      "url": "https://letterboxd.com/film/rocknrolla/"
+    },
+    {
+      "name": "Unknown",
+      "releaseYear": 2011,
+      "rating": 2.5,
+      "like": true,
+      "dateWatched": "Sun, 15 Mar 2026 04:26:30 +1300",
+      "poster": "https://a.ltrbxd.com/resized/film-poster/1/7/3/7/2/17372-unknown-0-600-0-900-crop.jpg?v=17e6c9104e",
+      "url": "https://letterboxd.com/film/unknown-2011/"
+    },
+    {
+      "name": "Gremlins 2: The New Batch",
+      "releaseYear": 1990,
+      "rating": 3.5,
+      "like": true,
+      "dateWatched": "Tue, 10 Mar 2026 11:01:51 +1300",
+      "poster": "https://a.ltrbxd.com/resized/sm/upload/ou/eh/1p/rv/eKBIXDGTRMZS4aA9KS71Fyz8Yeq-0-600-0-900-crop.jpg?v=3d924e45ac",
+      "url": "https://letterboxd.com/film/gremlins-2-the-new-batch/"
+    },
+    {
+      "name": "The Mask of Zorro",
+      "releaseYear": 1998,
+      "rating": 4.5,
+      "like": true,
+      "dateWatched": "Mon, 9 Mar 2026 08:01:37 +1300",
+      "poster": "https://a.ltrbxd.com/resized/film-poster/4/7/2/5/2/47252-the-mask-of-zorro-0-600-0-900-crop.jpg?v=c77adbef9e",
+      "url": "https://letterboxd.com/film/the-mask-of-zorro/"
+    },
+    {
+      "name": "Fear and Loathing in Las Vegas",
+      "releaseYear": 1998,
+      "rating": 3.0,
+      "like": false,
+      "dateWatched": "Sun, 8 Mar 2026 05:31:46 +1300",
+      "poster": "https://a.ltrbxd.com/resized/film-poster/5/0/7/2/5/50725-fear-and-loathing-in-las-vegas-0-600-0-900-crop.jpg?v=ff824b403c",
+      "url": "https://letterboxd.com/film/fear-and-loathing-in-las-vegas/"
+    },
+    {
+      "name": "Topkapi",
+      "releaseYear": 1964,
+      "rating": 3.5,
+      "like": true,
+      "dateWatched": "Mon, 2 Mar 2026 05:11:53 +1300",
+      "poster": "https://a.ltrbxd.com/resized/film-poster/4/8/9/8/2/48982-topkapi-0-600-0-900-crop.jpg?v=051a61ef85",
+      "url": "https://letterboxd.com/film/topkapi/"
+    },
+    {
+      "name": "Labyrinth",
+      "releaseYear": 1986,
+      "rating": 4.0,
+      "like": true,
+      "dateWatched": "Sun, 1 Mar 2026 11:17:56 +1300",
+      "poster": "https://a.ltrbxd.com/resized/film-poster/4/3/7/5/1/43751-labyrinth-0-600-0-900-crop.jpg?v=608378d65b",
+      "url": "https://letterboxd.com/film/labyrinth/"
+    },
+    {
+      "name": "Decision to Leave",
+      "releaseYear": 2022,
+      "rating": 4.0,
+      "like": true,
+      "dateWatched": "Sun, 1 Mar 2026 06:24:18 +1300",
+      "poster": "https://a.ltrbxd.com/resized/film-poster/6/2/9/3/2/0/629320-decision-to-leave-0-600-0-900-crop.jpg?v=30eaeaf481",
+      "url": "https://letterboxd.com/film/decision-to-leave/"
+    },
+    {
+      "name": "The Talented Mr. Ripley",
+      "releaseYear": 1999,
+      "rating": 4.5,
+      "like": true,
+      "dateWatched": "Mon, 23 Feb 2026 05:24:42 +1300",
+      "poster": "https://a.ltrbxd.com/resized/film-poster/5/1/1/3/8/51138-the-talented-mr-ripley-0-600-0-900-crop.jpg?v=70e0a57506",
+      "url": "https://letterboxd.com/film/the-talented-mr-ripley/"
+    },
+    {
+      "name": "Stalingrad",
+      "releaseYear": 1993,
+      "rating": 4.0,
+      "like": true,
+      "dateWatched": "Sun, 22 Feb 2026 05:43:37 +1300",
+      "poster": "https://a.ltrbxd.com/resized/film-poster/4/5/6/0/4/45604-stalingrad-0-600-0-900-crop.jpg?v=44c4cb42fe",
+      "url": "https://letterboxd.com/film/stalingrad/"
+    },
+    {
+      "name": "Flow",
+      "releaseYear": 2024,
+      "rating": 5.0,
+      "like": true,
+      "dateWatched": "Wed, 18 Feb 2026 10:15:45 +1300",
+      "poster": "https://a.ltrbxd.com/resized/film-poster/7/3/9/4/5/1/739451-flow-2024-0-600-0-900-crop.jpg?v=d664eca804",
+      "url": "https://letterboxd.com/film/flow-2024/"
+    },
+    {
+      "name": "Blades of Glory",
+      "releaseYear": 2007,
+      "rating": 3.0,
+      "like": true,
+      "dateWatched": "Mon, 16 Feb 2026 10:44:22 +1300",
+      "poster": "https://a.ltrbxd.com/resized/film-poster/4/6/6/8/2/46682-blades-of-glory-0-600-0-900-crop.jpg?v=e8a83a8891",
+      "url": "https://letterboxd.com/film/blades-of-glory/"
+    },
+    {
+      "name": "Fight Club",
+      "releaseYear": 1999,
+      "rating": 5.0,
+      "like": true,
+      "dateWatched": "Sun, 15 Feb 2026 05:44:33 +1300",
+      "poster": "https://a.ltrbxd.com/resized/film-poster/5/1/5/6/8/51568-fight-club-0-600-0-900-crop.jpg?v=768b32dfa4",
+      "url": "https://letterboxd.com/film/fight-club/"
+    },
+    {
+      "name": "Stagecoach",
+      "releaseYear": 1939,
+      "rating": 4.0,
+      "like": true,
+      "dateWatched": "Fri, 13 Feb 2026 12:21:02 +1300",
+      "poster": "https://a.ltrbxd.com/resized/film-poster/5/1/1/7/4/51174-stagecoach-0-600-0-900-crop.jpg?v=9f0a1f0c3e",
+      "url": "https://letterboxd.com/film/stagecoach/"
+    },
+    {
+      "name": "Odd Man Out",
+      "releaseYear": 1947,
+      "rating": 4.0,
+      "like": true,
+      "dateWatched": "Tue, 10 Feb 2026 10:48:20 +1300",
+      "poster": "https://a.ltrbxd.com/resized/film-poster/2/1/6/8/8/21688-odd-man-out-0-600-0-900-crop.jpg?v=d04bb3da00",
+      "url": "https://letterboxd.com/film/odd-man-out/"
+    },
+    {
+      "name": "Tetris",
+      "releaseYear": 2023,
+      "rating": 4.0,
+      "like": true,
+      "dateWatched": "Mon, 9 Feb 2026 10:50:57 +1300",
+      "poster": "https://a.ltrbxd.com/resized/film-poster/6/4/9/1/8/8/649188-tetris-0-600-0-900-crop.jpg?v=e337f04260",
+      "url": "https://letterboxd.com/film/tetris/"
+    },
+    {
+      "name": "Road to Perdition",
+      "releaseYear": 2002,
+      "rating": 4.0,
+      "like": true,
+      "dateWatched": "Mon, 9 Feb 2026 05:12:58 +1300",
+      "poster": "https://a.ltrbxd.com/resized/sm/upload/2b/u2/p2/zz/jn0GH8klINSQtRNifY8W2Kv4ajl-0-600-0-900-crop.jpg?v=c52df15b61",
+      "url": "https://letterboxd.com/film/road-to-perdition/"
+    },
+    {
+      "name": "All That Jazz",
+      "releaseYear": 1979,
+      "rating": 5.0,
+      "like": true,
+      "dateWatched": "Sun, 8 Feb 2026 05:15:04 +1300",
+      "poster": "https://a.ltrbxd.com/resized/sm/upload/r8/jc/ev/99/pqkYD8nqaW1DYMPokR90NeBXiB9-0-600-0-900-crop.jpg?v=c858f7c787",
+      "url": "https://letterboxd.com/film/all-that-jazz/"
+    },
+    {
+      "name": "Days of Heaven",
+      "releaseYear": 1978,
+      "rating": 3.5,
+      "like": true,
+      "dateWatched": "Sat, 7 Feb 2026 09:54:51 +1300",
+      "poster": "https://a.ltrbxd.com/resized/sm/upload/x3/jx/v5/l2/rwxTYjOZmX2rGhz7avLe1qsjNqe-0-600-0-900-crop.jpg?v=5fe1a56460",
+      "url": "https://letterboxd.com/film/days-of-heaven/"
+    },
+    {
+      "name": "Sahara",
+      "releaseYear": 1943,
+      "rating": 4.0,
+      "like": true,
+      "dateWatched": "Fri, 6 Feb 2026 10:55:03 +1300",
+      "poster": "https://a.ltrbxd.com/resized/film-poster/4/0/1/0/2/40102-sahara-0-600-0-900-crop.jpg?v=d3f9aca75e",
+      "url": "https://letterboxd.com/film/sahara/"
+    },
+    {
+      "name": "Dio: Dreamers Never Die",
+      "releaseYear": 2022,
+      "rating": 5.0,
+      "like": true,
+      "dateWatched": "Mon, 2 Feb 2026 06:20:10 +1300",
+      "poster": "https://a.ltrbxd.com/resized/film-poster/8/3/9/6/3/1/839631-dio-dreamers-never-die-0-600-0-900-crop.jpg?v=c86cf8f237",
+      "url": "https://letterboxd.com/film/dio-dreamers-never-die/"
+    },
+    {
+      "name": "Black Bag",
+      "releaseYear": 2025,
+      "rating": 3.5,
+      "like": true,
+      "dateWatched": "Mon, 2 Feb 2026 05:41:59 +1300",
+      "poster": "https://a.ltrbxd.com/resized/film-poster/1/1/1/6/7/5/5/1116755-black-bag-2025-0-600-0-900-crop.jpg?v=7dbc1baf6f",
+      "url": "https://letterboxd.com/film/black-bag-2025/"
+    },
+    {
+      "name": "Anora",
+      "releaseYear": 2024,
+      "rating": 4.0,
+      "like": true,
+      "dateWatched": "Sun, 1 Feb 2026 06:03:02 +1300",
+      "poster": "https://a.ltrbxd.com/resized/film-poster/9/5/9/5/4/0/959540-anora-0-600-0-900-crop.jpg?v=6f92877033",
+      "url": "https://letterboxd.com/film/anora/"
+    },
+    {
+      "name": "Rome, Open City",
+      "releaseYear": 1945,
+      "rating": 4.0,
+      "like": true,
+      "dateWatched": "Mon, 26 Jan 2026 11:57:24 +1300",
+      "poster": "https://a.ltrbxd.com/resized/film-poster/5/1/7/5/2/51752-rome-open-city-0-600-0-900-crop.jpg?v=5f373e3c23",
+      "url": "https://letterboxd.com/film/rome-open-city/"
+    },
+    {
+      "name": "The Killing Fields",
+      "releaseYear": 1984,
+      "rating": 3.5,
+      "like": false,
+      "dateWatched": "Mon, 26 Jan 2026 05:04:15 +1300",
+      "poster": "https://a.ltrbxd.com/resized/film-poster/5/1/4/9/9/51499-the-killing-fields-0-600-0-900-crop.jpg?v=9849e984a8",
+      "url": "https://letterboxd.com/film/the-killing-fields/"
+    },
+    {
+      "name": "Rush",
+      "releaseYear": 2013,
+      "rating": 5.0,
+      "like": true,
+      "dateWatched": "Sun, 25 Jan 2026 04:42:21 +1300",
+      "poster": "https://a.ltrbxd.com/resized/film-poster/7/9/7/8/7/79787-rush-0-600-0-900-crop.jpg?v=ca082886e5",
+      "url": "https://letterboxd.com/film/rush-2013/"
+    },
+    {
+      "name": "Spider-Man 3",
+      "releaseYear": 2007,
+      "rating": 3.5,
+      "like": true,
+      "dateWatched": "Tue, 20 Jan 2026 11:41:33 +1300",
+      "poster": "https://a.ltrbxd.com/resized/sm/upload/gi/zi/fp/69/uC2pAMjb32NIgQ1GdC1Bl6LZJc2-0-600-0-900-crop.jpg?v=71a23d5211",
+      "url": "https://letterboxd.com/film/spider-man-3/"
+    }
+  ]
+}
