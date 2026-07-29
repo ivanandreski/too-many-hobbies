@@ -5,6 +5,12 @@
 // shows average speed, running shows average pace. Each widget root carries a
 // data-strava-sport attribute naming which of the two it is.
 //
+// Each data file holds one or more *groups*. Cycling has two — rides and
+// commutes, which Strava distinguishes with a boolean `commute` flag on every
+// activity — and running has one. A group owns both its own summary stats and
+// its own activity list, so switching tabs swaps the whole panel. The tab bar
+// is hidden when there is only one group, which is why running looks unchanged.
+//
 // The JSON files hold raw Strava values — metres, seconds, local ISO timestamps —
 // and every displayed number is derived here. That keeps a single source of
 // truth for each fact, so distance and speed can never disagree.
@@ -13,12 +19,14 @@ const SECONDS_PER_MINUTE = 60;
 const SECONDS_PER_HOUR = 3600;
 const METRES_PER_KILOMETRE = 1000;
 
+const ACTIVE_TAB_CLASS = "strava-tab-active";
+
 // Per-sport rendering rules. `secondary` describes the middle summary stat and
-// the matching per-activity metric.
+// the matching per-activity metric. Count labels come from the group, not here,
+// because cycling's two groups need different words ("Rides" vs "Commutes").
 const SPORTS = {
   cycling: {
     dataPath: "/data/strava/cycling.json",
-    countLabel: "Rides",
     secondary: {
       label: "Avg Speed",
       unit: "km/h",
@@ -28,7 +36,6 @@ const SPORTS = {
   },
   running: {
     dataPath: "/data/strava/running.json",
-    countLabel: "Runs",
     secondary: {
       label: "Avg Pace",
       unit: "/km",
@@ -40,11 +47,11 @@ const SPORTS = {
 
 // --- Formatting -------------------------------------------------------------
 
-// Headline summary figure: trims a pointless ".0" so 248000 m reads as "248"
-// while 31800 m still reads as "31.8".
+// Headline summary figure: thousands separated, and trims a pointless ".0" so
+// 3240000 m reads as "3,240" while 31800 m still reads as "31.8".
 const formatSummaryDistanceKm = (distanceMetres) => {
-  const kilometres = distanceMetres / METRES_PER_KILOMETRE;
-  return Number(kilometres.toFixed(1)).toString();
+  const kilometres = Number((distanceMetres / METRES_PER_KILOMETRE).toFixed(1));
+  return kilometres.toLocaleString("en-US");
 };
 
 // Per-activity figure: always one decimal, so the distance column stays aligned
@@ -92,13 +99,13 @@ const padTwoDigits = (value) => String(value).padStart(2, "0");
 
 // --- Rendering --------------------------------------------------------------
 
-const renderSummary = (widgetEl, sport, stravaData) => {
-  const { summary, period } = stravaData;
+const renderSummary = (widgetEl, sport, group, period) => {
+  const { summary } = group;
 
   setText(widgetEl, "[data-strava-period]", period);
   setText(widgetEl, "[data-strava-distance]", formatSummaryDistanceKm(summary.distanceMetres));
   setText(widgetEl, "[data-strava-count]", summary.activityCount);
-  setText(widgetEl, "[data-strava-count-label]", sport.countLabel);
+  setText(widgetEl, "[data-strava-count-label]", group.label);
 
   setText(
     widgetEl,
@@ -111,6 +118,9 @@ const renderSummary = (widgetEl, sport, stravaData) => {
 
 const renderActivities = (widgetEl, sport, activities) => {
   const templateEl = widgetEl.querySelector("[data-strava-activity-template]");
+  const containerEl = templateEl.parentNode;
+
+  clearRenderedRows(containerEl);
 
   activities.forEach((activity, index) => {
     const clone = document.importNode(templateEl.content, true);
@@ -136,13 +146,46 @@ const renderActivities = (widgetEl, sport, activities) => {
       rowEl.className = "strava-activity-row";
     }
 
-    templateEl.parentNode.appendChild(clone);
+    containerEl.appendChild(clone);
   });
 };
 
-const setText = (rootEl, selector, value) => {
-  const targetEl = rootEl.querySelector(selector);
-  if (targetEl) targetEl.innerText = value;
+// Switching tabs re-renders the list, so previously appended rows must go. The
+// <template> itself is the source of those rows and has to survive.
+const clearRenderedRows = (containerEl) => {
+  [...containerEl.children]
+    .filter((child) => child.tagName !== "TEMPLATE")
+    .forEach((child) => child.remove());
+};
+
+const renderTabs = (widgetEl, groups, onSelect) => {
+  const tabsEl = widgetEl.querySelector("[data-strava-tabs]");
+
+  // A single group needs no switch — this is what keeps running looking untouched.
+  if (groups.length < 2) return;
+
+  const templateEl = tabsEl.querySelector("[data-strava-tab-template]");
+
+  groups.forEach((group, index) => {
+    const clone = document.importNode(templateEl.content, true);
+    const tabEl = clone.querySelector(".strava-tab");
+
+    tabEl.innerText = group.label;
+    tabEl.dataset.stravaTabIndex = index;
+    tabEl.addEventListener("click", () => onSelect(index));
+
+    tabsEl.appendChild(clone);
+  });
+
+  tabsEl.hidden = false;
+};
+
+const highlightActiveTab = (widgetEl, activeIndex) => {
+  widgetEl.querySelectorAll(".strava-tab").forEach((tabEl) => {
+    const isActive = Number(tabEl.dataset.stravaTabIndex) === activeIndex;
+    tabEl.classList.toggle(ACTIVE_TAB_CLASS, isActive);
+    tabEl.setAttribute("aria-selected", String(isActive));
+  });
 };
 
 const initStravaWidget = async (widgetEl) => {
@@ -155,15 +198,27 @@ const initStravaWidget = async (widgetEl) => {
   }
 
   const stravaData = await fetchJsonData(sport.dataPath);
+  const groups = stravaData && stravaData.groups;
 
-  // fetchJsonData returns [] on failure, so bail rather than throw on .summary.
-  if (!stravaData || !stravaData.summary) {
+  // fetchJsonData returns [] on failure, so bail rather than throw below.
+  if (!groups || groups.length === 0) {
     console.error(`No Strava data for ${sportName}`);
     return;
   }
 
-  renderSummary(widgetEl, sport, stravaData);
-  renderActivities(widgetEl, sport, stravaData.activities || []);
+  const selectGroup = (index) => {
+    renderSummary(widgetEl, sport, groups[index], stravaData.period);
+    renderActivities(widgetEl, sport, groups[index].activities || []);
+    highlightActiveTab(widgetEl, index);
+  };
+
+  renderTabs(widgetEl, groups, selectGroup);
+  selectGroup(0);
+};
+
+const setText = (rootEl, selector, value) => {
+  const targetEl = rootEl.querySelector(selector);
+  if (targetEl) targetEl.innerText = value;
 };
 
 export const StravaData = {

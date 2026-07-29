@@ -50,6 +50,51 @@
     color: #6D6D78;
   }
 
+  /* Group switcher (e.g. Rides / Commutes). Hidden via the [hidden] attribute
+     when a sport has only one group, so display must not override it. */
+  .strava-tabs {
+    display: flex;
+    gap: 0.25rem;
+    padding: 0.625rem 1.25rem;
+    border-bottom: 1px solid #E8E8E8;
+  }
+
+  .strava-tabs[hidden] {
+    display: none;
+  }
+
+  .strava-tab {
+    flex: 1;
+    padding: 0.5rem 0.75rem;
+    border: none;
+    border-radius: 0.5rem;
+    background-color: transparent;
+    font: inherit;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #6D6D78;
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+  }
+
+  .strava-tab:hover {
+    background-color: #F7F7FA;
+    color: #242428;
+  }
+
+  .strava-tab-active,
+  .strava-tab-active:hover {
+    background-color: #FC4C02;
+    color: #FFFFFF;
+  }
+
+  .strava-tab:focus-visible {
+    outline: 2px solid #FC4C02;
+    outline-offset: 2px;
+  }
+
   .strava-stats-row {
     display: grid;
     grid-template-columns: repeat(3, 1fr);

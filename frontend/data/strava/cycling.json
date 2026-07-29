@@ -1,30 +1,77 @@
 {
   "data": {
     "sport": "cycling",
-    "period": "This Month",
-    "summary": {
-      "distanceMetres": 248000,
-      "movingTimeSeconds": 32703,
-      "activityCount": 12
-    },
-    "activities": [
+    "period": "This Year",
+    "groups": [
       {
-        "name": "Morning Ride",
-        "startDateLocal": "2026-04-08T07:12:00",
-        "distanceMetres": 32400,
-        "movingTimeSeconds": 4283
+        "key": "rides",
+        "label": "Rides",
+        "summary": {
+          "distanceMetres": 3240000,
+          "movingTimeSeconds": 418064,
+          "activityCount": 94
+        },
+        "activities": [
+          {
+            "name": "Weekend Loop",
+            "startDateLocal": "2026-07-26T08:30:00",
+            "distanceMetres": 58100,
+            "movingTimeSeconds": 7450
+          },
+          {
+            "name": "Morning Ride",
+            "startDateLocal": "2026-07-22T07:12:00",
+            "distanceMetres": 32400,
+            "movingTimeSeconds": 4283
+          },
+          {
+            "name": "Hill Repeats",
+            "startDateLocal": "2026-07-19T09:00:00",
+            "distanceMetres": 41800,
+            "movingTimeSeconds": 5920
+          },
+          {
+            "name": "Evening Spin",
+            "startDateLocal": "2026-07-15T18:45:00",
+            "distanceMetres": 24600,
+            "movingTimeSeconds": 3210
+          }
+        ]
       },
       {
-        "name": "Weekend Loop",
-        "startDateLocal": "2026-04-06T09:30:00",
-        "distanceMetres": 58100,
-        "movingTimeSeconds": 7450
-      },
-      {
-        "name": "Commute",
-        "startDateLocal": "2026-04-03T08:05:00",
-        "distanceMetres": 14200,
-        "movingTimeSeconds": 1981
+        "key": "commutes",
+        "label": "Commutes",
+        "summary": {
+          "distanceMetres": 880000,
+          "movingTimeSeconds": 131446,
+          "activityCount": 88
+        },
+        "activities": [
+          {
+            "name": "Commute home",
+            "startDateLocal": "2026-07-28T17:35:00",
+            "distanceMetres": 14000,
+            "movingTimeSeconds": 1900
+          },
+          {
+            "name": "Commute to work",
+            "startDateLocal": "2026-07-28T08:05:00",
+            "distanceMetres": 14200,
+            "movingTimeSeconds": 1981
+          },
+          {
+            "name": "Commute home",
+            "startDateLocal": "2026-07-27T17:50:00",
+            "distanceMetres": 14000,
+            "movingTimeSeconds": 1975
+          },
+          {
+            "name": "Commute to work",
+            "startDateLocal": "2026-07-27T08:10:00",
+            "distanceMetres": 14200,
+            "movingTimeSeconds": 2040
+          }
+        ]
       }
     ]
   }

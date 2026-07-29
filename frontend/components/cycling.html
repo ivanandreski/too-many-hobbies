@@ -2,8 +2,8 @@
   <div id="cycling-summary" class="widget-summary">
     <h2>🚴 Cycling</h2>
     <p>
-      Cycling is my main sport. I track all my rides on Strava — here's a snapshot of this month's stats and recent
-      sessions.
+      Cycling is my main sport. I track all my rides on Strava — here's a snapshot of this year's stats and recent
+      sessions, split between proper rides and the daily commute.
     </p>
   </div>
   <div id="widget-cycling" class="widget">
@@ -12,6 +12,10 @@
       the middle stat. Placeholders are marked with data-* attributes rather than
       ids because the running widget renders the same markup on the same page,
       and ids would collide.
+
+      Cycling splits into two groups (rides and commutes), so the tab bar below
+      is populated with one tab per group. Summary stats and the activity list
+      both belong to the selected tab.
     -->
     <div class="strava-widget" data-strava-widget data-strava-sport="cycling">
       <div class="strava-header">
@@ -35,6 +39,12 @@
           class="lucide lucide-chevron-right strava-chevron">
           <path d="m9 18 6-6-6-6"></path>
         </svg>
+      </div>
+      <!-- Hidden by strava.js when the sport has only one group. -->
+      <div class="strava-tabs" data-strava-tabs role="tablist" hidden>
+        <template data-strava-tab-template>
+          <button type="button" class="strava-tab" role="tab"></button>
+        </template>
       </div>
       <div class="strava-stats-row">
         <div class="strava-stat-bordered">

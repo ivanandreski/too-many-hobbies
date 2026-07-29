@@ -22,6 +22,12 @@
           <path d="m9 18 6-6-6-6"></path>
         </svg>
       </div>
+      <!-- Running has a single group, so strava.js leaves this tab bar hidden. -->
+      <div class="strava-tabs" data-strava-tabs role="tablist" hidden>
+        <template data-strava-tab-template>
+          <button type="button" class="strava-tab" role="tab"></button>
+        </template>
+      </div>
       <div class="strava-stats-row">
         <div class="strava-stat-bordered">
           <p class="strava-stat-value"><span data-strava-distance></span><span class="strava-stat-unit">km</span></p>
