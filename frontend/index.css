@@ -1,8 +1,10 @@
 @import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css");
 
-@import url("/widgets/letterboxd/letterboxd.css");
-@import url("/widgets/gear/gear.css");
-@import url("/widgets/strava/strava.css");
+/* Relative, not root-relative: GitHub Pages serves the site from a subpath, so
+   "/widgets/..." would resolve outside the site and 404. */
+@import url("widgets/letterboxd/letterboxd.css");
+@import url("widgets/gear/gear.css");
+@import url("widgets/strava/strava.css");
 
 body {
   max-width: 1600px;

@@ -1,0 +1,31 @@
+{
+  "data": {
+    "sport": "cycling",
+    "period": "This Month",
+    "summary": {
+      "distanceMetres": 248000,
+      "movingTimeSeconds": 32703,
+      "activityCount": 12
+    },
+    "activities": [
+      {
+        "name": "Morning Ride",
+        "startDateLocal": "2026-04-08T07:12:00",
+        "distanceMetres": 32400,
+        "movingTimeSeconds": 4283
+      },
+      {
+        "name": "Weekend Loop",
+        "startDateLocal": "2026-04-06T09:30:00",
+        "distanceMetres": 58100,
+        "movingTimeSeconds": 7450
+      },
+      {
+        "name": "Commute",
+        "startDateLocal": "2026-04-03T08:05:00",
+        "distanceMetres": 14200,
+        "movingTimeSeconds": 1981
+      }
+    ]
+  }
+}

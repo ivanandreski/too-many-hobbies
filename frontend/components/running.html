@@ -6,14 +6,15 @@
       head.
     </p>
   </div>
-  <div id="widget-cycling" class="widget">
-    <div class="strava-widget">
+  <div id="widget-running" class="widget">
+    <!-- Same markup as the cycling widget; only data-strava-sport differs. -->
+    <div class="strava-widget" data-strava-widget data-strava-sport="running">
       <div class="strava-header">
         <div class="strava-header-left">
           <div class="strava-icon-circle"><span class="strava-icon-emoji">🏃</span></div>
           <div>
             <h2 class="strava-title">Running</h2>
-            <p class="strava-subtitle">Strava · This Month</p>
+            <p class="strava-subtitle">Strava · <span data-strava-period></span></p>
           </div>
         </div><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
           stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -23,16 +24,17 @@
       </div>
       <div class="strava-stats-row">
         <div class="strava-stat-bordered">
-          <p class="strava-stat-value">31.8<span class="strava-stat-unit">km</span></p>
+          <p class="strava-stat-value"><span data-strava-distance></span><span class="strava-stat-unit">km</span></p>
           <p class="strava-stat-label">Distance</p>
         </div>
         <div class="strava-stat-bordered">
-          <p class="strava-stat-value">5:11<span class="strava-stat-unit">/km</span></p>
-          <p class="strava-stat-label">Avg Pace</p>
+          <p class="strava-stat-value"><span data-strava-secondary-value></span><span class="strava-stat-unit"
+              data-strava-secondary-unit></span></p>
+          <p class="strava-stat-label" data-strava-secondary-label></p>
         </div>
         <div class="strava-stat">
-          <p class="strava-stat-value">4</p>
-          <p class="strava-stat-label">Runs</p>
+          <p class="strava-stat-value" data-strava-count></p>
+          <p class="strava-stat-label" data-strava-count-label></p>
         </div>
       </div>
       <div>
@@ -40,97 +42,32 @@
           <div class="strava-activity-bar"></div>
           <p class="strava-activity-label">Recent Activity</p>
         </div>
-        <div class="strava-activity-row-bordered">
-          <div class="strava-activity-left">
-            <div class="strava-activity-dot"></div>
-            <div>
-              <p class="strava-activity-title">Evening Run</p>
-              <p class="strava-activity-date">Apr 7</p>
+        <div data-strava-activities>
+          <template data-strava-activity-template>
+            <div class="strava-activity-row-bordered">
+              <div class="strava-activity-left">
+                <div class="strava-activity-dot"></div>
+                <div>
+                  <p class="strava-activity-title"></p>
+                  <p class="strava-activity-date"></p>
+                </div>
+              </div>
+              <div class="strava-activity-right">
+                <div>
+                  <p class="strava-activity-metric-value" data-strava-activity-distance></p>
+                  <p class="strava-activity-metric-label">Dist</p>
+                </div>
+                <div>
+                  <p class="strava-activity-metric-value" data-strava-activity-secondary></p>
+                  <p class="strava-activity-metric-label" data-strava-activity-secondary-label></p>
+                </div>
+                <div>
+                  <p class="strava-activity-metric-value" data-strava-activity-time></p>
+                  <p class="strava-activity-metric-label">Time</p>
+                </div>
+              </div>
             </div>
-          </div>
-          <div class="strava-activity-right">
-            <div>
-              <p class="strava-activity-metric-value">8.2 km</p>
-              <p class="strava-activity-metric-label">Dist</p>
-            </div>
-            <div>
-              <p class="strava-activity-metric-value">5:12</p>
-              <p class="strava-activity-metric-label">/km</p>
-            </div>
-            <div>
-              <p class="strava-activity-metric-value">42:38</p>
-              <p class="strava-activity-metric-label">Time</p>
-            </div>
-          </div>
-        </div>
-        <div class="strava-activity-row-bordered">
-          <div class="strava-activity-left">
-            <div class="strava-activity-dot"></div>
-            <div>
-              <p class="strava-activity-title">Easy Run</p>
-              <p class="strava-activity-date">Apr 5</p>
-            </div>
-          </div>
-          <div class="strava-activity-right">
-            <div>
-              <p class="strava-activity-metric-value">5.0 km</p>
-              <p class="strava-activity-metric-label">Dist</p>
-            </div>
-            <div>
-              <p class="strava-activity-metric-value">4:58</p>
-              <p class="strava-activity-metric-label">/km</p>
-            </div>
-            <div>
-              <p class="strava-activity-metric-value">24:50</p>
-              <p class="strava-activity-metric-label">Time</p>
-            </div>
-          </div>
-        </div>
-        <div class="strava-activity-row-bordered">
-          <div class="strava-activity-left">
-            <div class="strava-activity-dot"></div>
-            <div>
-              <p class="strava-activity-title">Long Run</p>
-              <p class="strava-activity-date">Apr 2</p>
-            </div>
-          </div>
-          <div class="strava-activity-right">
-            <div>
-              <p class="strava-activity-metric-value">12.1 km</p>
-              <p class="strava-activity-metric-label">Dist</p>
-            </div>
-            <div>
-              <p class="strava-activity-metric-value">5:30</p>
-              <p class="strava-activity-metric-label">/km</p>
-            </div>
-            <div>
-              <p class="strava-activity-metric-value">1:06:33</p>
-              <p class="strava-activity-metric-label">Time</p>
-            </div>
-          </div>
-        </div>
-        <div class="strava-activity-row">
-          <div class="strava-activity-left">
-            <div class="strava-activity-dot"></div>
-            <div>
-              <p class="strava-activity-title">Tempo Run</p>
-              <p class="strava-activity-date">Mar 30</p>
-            </div>
-          </div>
-          <div class="strava-activity-right">
-            <div>
-              <p class="strava-activity-metric-value">6.5 km</p>
-              <p class="strava-activity-metric-label">Dist</p>
-            </div>
-            <div>
-              <p class="strava-activity-metric-value">5:05</p>
-              <p class="strava-activity-metric-label">/km</p>
-            </div>
-            <div>
-              <p class="strava-activity-metric-value">33:02</p>
-              <p class="strava-activity-metric-label">Time</p>
-            </div>
-          </div>
+          </template>
         </div>
       </div>
       <div class="strava-footer">

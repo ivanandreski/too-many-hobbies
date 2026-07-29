@@ -1,7 +1,10 @@
 import { LetterboxdData } from "./widgets/letterboxd/letterboxd.js";
 import { GearData } from "./widgets/gear/gear.js"
+import { StravaData } from "./widgets/strava/strava.js"
 
 window.onload = async () => {
+  // Components must all be in the DOM before any widget populates them —
+  // StravaData.init() finds its widgets by querying the rendered markup.
   await Promise.all([
     renderComponent("film"),
     renderComponent("running"),
@@ -11,7 +14,8 @@ window.onload = async () => {
 
   await Promise.all([
     LetterboxdData.init(),
-    GearData.init()
+    GearData.init(),
+    StravaData.init()
   ]);
 }
 
