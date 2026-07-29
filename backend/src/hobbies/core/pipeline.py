@@ -11,6 +11,8 @@ The orchestration is handled here by the run() method.
 from abc import ABC, abstractmethod
 from pathlib import Path
 
+from hobbies.core.writers.json_writer import JsonPayload
+
 
 class DataPipeline(ABC):
     """
@@ -46,25 +48,26 @@ class DataPipeline(ABC):
         ...
 
     @abstractmethod
-    def map(self, parsed_items: list) -> list[dict]:
+    def map(self, parsed_items: list) -> JsonPayload:
         """
-        Map intermediate data objects into final DTO dicts.
+        Map intermediate data objects into the final JSON payload.
 
         Args:
             parsed_items: The list returned by parse().
 
         Returns:
-            List of dicts ready to be serialised to JSON.
+            Either a list of DTO dicts, or a dict mapping keys to DTO dicts for
+            features whose JSON is a keyed object rather than an array.
         """
         ...
 
     @abstractmethod
-    def write(self, dto_entries: list[dict]) -> None:
+    def write(self, dto_entries: JsonPayload) -> None:
         """
-        Write the final DTO dicts to their destination (e.g. a JSON file).
+        Write the final payload to its destination (e.g. a JSON file).
 
         Args:
-            dto_entries: The list returned by map().
+            dto_entries: The payload returned by map().
         """
         ...
 
