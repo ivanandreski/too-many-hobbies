@@ -1,0 +1,28 @@
+{
+  "data": [
+    {
+      "name": "Raiders of the Lost Ark",
+      "releaseYear": 1981,
+      "poster": "https://a.ltrbxd.com/resized/film-poster/5/1/9/6/5/51965-raiders-of-the-lost-ark-0-1000-0-1500-crop.jpg?v=2b066bfd52",
+      "url": "https://letterboxd.com/film/raiders-of-the-lost-ark/"
+    },
+    {
+      "name": "Top Gun: Maverick",
+      "releaseYear": 2022,
+      "poster": "https://a.ltrbxd.com/resized/film-poster/2/9/3/4/6/5/293465-top-gun-maverick-0-1000-0-1500-crop.jpg?v=9f8af0f61b",
+      "url": "https://letterboxd.com/film/top-gun-maverick/"
+    },
+    {
+      "name": "Casablanca",
+      "releaseYear": 1942,
+      "poster": "https://a.ltrbxd.com/resized/sm/upload/kq/vf/8s/1p/wOBKAoUJZb5qTsWv5XXvVV2vUzz-0-1000-0-1500-crop.jpg?v=cdb9b25970",
+      "url": "https://letterboxd.com/film/casablanca/"
+    },
+    {
+      "name": "Rear Window",
+      "releaseYear": 1954,
+      "poster": "https://a.ltrbxd.com/resized/film-poster/5/1/5/5/2/51552-rear-window-0-1000-0-1500-crop.jpg?v=7139bf4d08",
+      "url": "https://letterboxd.com/film/rear-window/"
+    }
+  ]
+}

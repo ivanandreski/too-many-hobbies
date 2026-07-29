@@ -5,6 +5,19 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "hobbies-backend"
 version = "0.1.0"
+requires-python = ">=3.11"
+dependencies = [
+    # Letterboxd profile posters are lazily loaded, so scraping favorites needs
+    # a real browser. Install the browser binary once with:
+    #     playwright install chromium
+    "playwright>=1.40",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[project.scripts]
+hobbies-generate = "hobbies.main:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
