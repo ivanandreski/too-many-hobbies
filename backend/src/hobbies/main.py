@@ -4,7 +4,7 @@ Command-line entrypoint for generating the frontend's JSON data files.
 Usage:
     hobbies-generate --username <letterboxd_username>       # every feature
     hobbies-generate diary --username <letterboxd_username>
-    hobbies-generate gear                                   # needs no username
+    hobbies-generate gear cycling running                   # all Strava outputs
     hobbies-generate favorites --username <name> --out /tmp/fav.json
 
 Each feature writes into frontend/data/ by default. Pass --out to write
@@ -12,8 +12,12 @@ somewhere else (e.g. backend/output/, which is gitignored) when you want to
 inspect the result before it lands on the real site data.
 
 Features differ in what they need:
-  * diary, favorites — a public Letterboxd username, via --username
-  * gear             — Strava API credentials, via the environment or backend/.env
+  * diary, favorites          a public Letterboxd username, via --username
+  * gear, cycling, running    a logged-in Strava session; see
+                              hobbies.features.strava.login
+
+The three Strava features share one scraper, so asking for all of them logs in
+once and reads each page once rather than three times.
 """
 
 import argparse
@@ -26,7 +30,8 @@ from hobbies.core.http import HttpError
 from hobbies.core.pipeline import DataPipeline
 from hobbies.features.diary.pipeline import DiaryPipeline
 from hobbies.features.favorites.pipeline import FavoritesPipeline
-from hobbies.features.gear.pipeline import GearPipeline
+from hobbies.features.strava.pipelines import CyclingPipeline, GearPipeline, RunningPipeline
+from hobbies.features.strava.scraper import StravaScraper
 
 # main.py lives at backend/src/hobbies/main.py, so the repo root is four up.
 REPO_ROOT = Path(__file__).resolve().parents[3]
@@ -41,33 +46,57 @@ class Feature:
     Attributes:
         default_output: Output path relative to frontend/data.
         needs_username: Whether the feature requires --username.
-        build:          Constructs the pipeline from a username (empty when not
-                        needed) and a resolved output path.
+        needs_strava:   Whether the feature uses the shared Strava scraper.
+        build:          Constructs the pipeline. Receives the username (empty
+                        when not needed), the resolved output path, and the
+                        shared scraper (None for non-Strava features).
     """
     default_output: Path
     needs_username: bool
-    build: Callable[[str, Path], DataPipeline]
+    needs_strava: bool
+    build: Callable[[str, Path, StravaScraper | None], DataPipeline]
 
 
 FEATURES: dict[str, Feature] = {
     "diary": Feature(
         default_output=Path("movies") / "diary.json",
         needs_username=True,
-        build=lambda username, output_path: DiaryPipeline(
+        needs_strava=False,
+        build=lambda username, output_path, _scraper: DiaryPipeline(
             username=username, output_path=output_path
         ),
     ),
     "favorites": Feature(
         default_output=Path("movies") / "favorites.json",
         needs_username=True,
-        build=lambda username, output_path: FavoritesPipeline(
+        needs_strava=False,
+        build=lambda username, output_path, _scraper: FavoritesPipeline(
             username=username, output_path=output_path
         ),
     ),
     "gear": Feature(
         default_output=Path("gear") / "bikes.json",
         needs_username=False,
-        build=lambda username, output_path: GearPipeline(output_path=output_path),
+        needs_strava=True,
+        build=lambda _username, output_path, scraper: GearPipeline(
+            output_path=output_path, scraper=scraper
+        ),
+    ),
+    "cycling": Feature(
+        default_output=Path("strava") / "cycling.json",
+        needs_username=False,
+        needs_strava=True,
+        build=lambda _username, output_path, scraper: CyclingPipeline(
+            output_path=output_path, scraper=scraper
+        ),
+    ),
+    "running": Feature(
+        default_output=Path("strava") / "running.json",
+        needs_username=False,
+        needs_strava=True,
+        build=lambda _username, output_path, scraper: RunningPipeline(
+            output_path=output_path, scraper=scraper
+        ),
     ),
 }
 
@@ -102,6 +131,12 @@ def build_argument_parser() -> argparse.ArgumentParser:
         help=f"File to load API credentials from (default: {DEFAULT_ENV_FILENAME}). "
              f"Missing files are ignored; real environment variables always win.",
     )
+    parser.add_argument(
+        "--show-browser",
+        action="store_true",
+        help="Run Strava scraping in a visible browser. Useful when a scrape "
+             "fails and you want to watch what the page does.",
+    )
     return parser
 
 
@@ -109,6 +144,7 @@ def run(
     feature_names: list[str],
     username: str | None,
     output_path: Path | None,
+    show_browser: bool = False,
 ) -> None:
     """Run each named pipeline in turn, writing to its default or given path."""
     if output_path is not None and len(feature_names) > 1:
@@ -122,17 +158,25 @@ def run(
             f"--username is required for: {', '.join(features_needing_username)}"
         )
 
+    # One scraper shared by every Strava feature: one login, one pass over the
+    # pages, regardless of how many files are being generated.
+    scraper = (
+        StravaScraper(headless=not show_browser)
+        if any(FEATURES[name].needs_strava for name in feature_names)
+        else None
+    )
+
     for feature_name in feature_names:
         feature = FEATURES[feature_name]
         destination = output_path or FRONTEND_DATA_DIR / feature.default_output
 
         print(f"[{feature_name}] generating → {destination}")
         try:
-            feature.build(username or "", destination).run()
+            feature.build(username or "", destination, scraper).run()
         except (RuntimeError, ValueError, HttpError) as error:
-            # Missing credentials, a rejected token, an unexpected upstream
-            # response: all actionable configuration problems rather than bugs,
-            # so report them plainly instead of dumping a traceback.
+            # Missing credentials, an expired session, changed markup: all
+            # actionable problems rather than bugs, so report them plainly
+            # instead of dumping a traceback.
             raise SystemExit(f"[{feature_name}] failed: {error}") from error
 
 
@@ -147,6 +191,7 @@ def main() -> None:
         feature_names=arguments.features or list(FEATURES),
         username=arguments.username,
         output_path=arguments.out,
+        show_browser=arguments.show_browser,
     )
 
 

@@ -7,9 +7,14 @@
 //
 // Each data file holds one or more *groups*. Cycling has two — rides and
 // commutes, which Strava distinguishes with a boolean `commute` flag on every
-// activity — and running has one. A group owns both its own summary stats and
-// its own activity list, so switching tabs swaps the whole panel. The tab bar
-// is hidden when there is only one group, which is why running looks unchanged.
+// activity — and running has one. The tab bar is hidden when there is only one
+// group, which is why running looks unchanged.
+//
+// The summary stats are sport-level and sit above the tabs, so they stay put
+// while the tabs filter the activity list below. That is a constraint of the
+// source, not a preference: Strava's year panel reports one total for all rides
+// with no commute breakdown, so per-tab year totals cannot be obtained without
+// aggregating every activity of the year.
 //
 // The JSON files hold raw Strava values — metres, seconds, local ISO timestamps —
 // and every displayed number is derived here. That keeps a single source of
@@ -99,13 +104,15 @@ const padTwoDigits = (value) => String(value).padStart(2, "0");
 
 // --- Rendering --------------------------------------------------------------
 
-const renderSummary = (widgetEl, sport, group, period) => {
-  const { summary } = group;
+const renderSummary = (widgetEl, sport, stravaData) => {
+  const { summary } = stravaData;
 
-  setText(widgetEl, "[data-strava-period]", period);
+  setText(widgetEl, "[data-strava-period]", stravaData.period);
   setText(widgetEl, "[data-strava-distance]", formatSummaryDistanceKm(summary.distanceMetres));
-  setText(widgetEl, "[data-strava-count]", summary.activityCount);
-  setText(widgetEl, "[data-strava-count-label]", group.label);
+  // The count is absent when Strava's totals panel did not show one. Render a
+  // dash rather than "null".
+  setText(widgetEl, "[data-strava-count]", summary.activityCount ?? "–");
+  setText(widgetEl, "[data-strava-count-label]", stravaData.countLabel || "");
 
   setText(
     widgetEl,
@@ -201,13 +208,15 @@ const initStravaWidget = async (widgetEl) => {
   const groups = stravaData && stravaData.groups;
 
   // fetchJsonData returns [] on failure, so bail rather than throw below.
-  if (!groups || groups.length === 0) {
+  if (!groups || groups.length === 0 || !stravaData.summary) {
     console.error(`No Strava data for ${sportName}`);
     return;
   }
 
+  // Summary is sport-level, so it is rendered once rather than per tab.
+  renderSummary(widgetEl, sport, stravaData);
+
   const selectGroup = (index) => {
-    renderSummary(widgetEl, sport, groups[index], stravaData.period);
     renderActivities(widgetEl, sport, groups[index].activities || []);
     highlightActiveTab(widgetEl, index);
   };

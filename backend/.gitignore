@@ -4,3 +4,6 @@ __pycache__/
 .pytest_cache/
 output/
 *.env
+
+# Strava login session (cookies). A live credential — never commit.
+.strava-session.json

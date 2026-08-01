@@ -1,6 +1,9 @@
 pyproject.toml
 src/hobbies/main.py
+src/hobbies/core/browser_session.py
+src/hobbies/core/env.py
 src/hobbies/core/fetcher.py
+src/hobbies/core/http.py
 src/hobbies/core/pipeline.py
 src/hobbies/core/rendered_fetcher.py
 src/hobbies/core/xml_parser.py
@@ -16,6 +19,18 @@ src/hobbies/features/favorites/mapper.py
 src/hobbies/features/favorites/models.py
 src/hobbies/features/favorites/parser.py
 src/hobbies/features/favorites/pipeline.py
+src/hobbies/features/strava/config.py
+src/hobbies/features/strava/constants.py
+src/hobbies/features/strava/extractors.py
+src/hobbies/features/strava/login.py
+src/hobbies/features/strava/mappers.py
+src/hobbies/features/strava/models.py
+src/hobbies/features/strava/page_parser.py
+src/hobbies/features/strava/pipelines.py
+src/hobbies/features/strava/probe.py
+src/hobbies/features/strava/scraper.py
+src/hobbies/features/strava/selection.py
+src/hobbies/features/strava/text.py
 src/hobbies_backend.egg-info/PKG-INFO
 src/hobbies_backend.egg-info/SOURCES.txt
 src/hobbies_backend.egg-info/dependency_links.txt
@@ -24,3 +39,7 @@ src/hobbies_backend.egg-info/requires.txt
 src/hobbies_backend.egg-info/top_level.txt
 tests/test_letterboxd_diary.py
 tests/test_letterboxd_favorites.py
+tests/test_strava_mappers.py
+tests/test_strava_page_parser.py
+tests/test_strava_selection.py
+tests/test_strava_text.py

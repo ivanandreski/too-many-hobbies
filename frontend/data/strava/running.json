@@ -1,40 +1,52 @@
 {
   "data": {
     "sport": "running",
-    "period": "This Month",
+    "period": "This Year",
+    "countLabel": "Runs",
+    "summary": {
+      "distanceMetres": 318000,
+      "movingTimeSeconds": 100230,
+      "activityCount": 41
+    },
+    "allTime": {
+      "distanceMetres": 2110000,
+      "movingTimeSeconds": 700000,
+      "activityCount": 260
+    },
     "groups": [
       {
         "key": "runs",
         "label": "Runs",
-        "summary": {
-          "distanceMetres": 31800,
-          "movingTimeSeconds": 10023,
-          "activityCount": 4
-        },
         "activities": [
           {
             "name": "Evening Run",
-            "startDateLocal": "2026-04-07T18:40:00",
+            "startDateLocal": "2026-07-25T00:00:00",
             "distanceMetres": 8200,
             "movingTimeSeconds": 2558
           },
           {
             "name": "Easy Run",
-            "startDateLocal": "2026-04-05T10:15:00",
+            "startDateLocal": "2026-07-21T00:00:00",
             "distanceMetres": 5000,
             "movingTimeSeconds": 1490
           },
           {
             "name": "Long Run",
-            "startDateLocal": "2026-04-02T09:00:00",
+            "startDateLocal": "2026-07-18T00:00:00",
             "distanceMetres": 12100,
             "movingTimeSeconds": 3993
           },
           {
             "name": "Tempo Run",
-            "startDateLocal": "2026-03-30T19:20:00",
+            "startDateLocal": "2026-07-14T00:00:00",
             "distanceMetres": 6500,
             "movingTimeSeconds": 1982
+          },
+          {
+            "name": "Recovery Jog",
+            "startDateLocal": "2026-07-11T00:00:00",
+            "distanceMetres": 4200,
+            "movingTimeSeconds": 1428
           }
         ]
       }

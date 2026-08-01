@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Mock Strava profile</title>
+</head>
+<body>
+  <!--
+    A stand-in for the parts of a Strava profile the scraper reads. This is NOT a
+    copy of Strava's markup — it is deliberately different, using generated-looking
+    class names and icon-only buttons, so that the extractors are exercised the way
+    they are meant to work: by finding regions via visible text and controls via
+    their identifying attributes, never via a hard-coded class name.
+
+    If an extractor passes against this file it is not proof it works against
+    Strava. It is proof it does not depend on markup details it should not.
+  -->
+
+  <nav class="c-x91">
+    <a href="/dashboard">Dashboard</a>
+    <a href="/athletes/10148337">Profile</a>
+  </nav>
+
+  <!-- Sport switcher: icons only, no text at all. -->
+  <div class="c-a02" role="tablist">
+    <button class="c-a03 is-active" role="tab" aria-label="Ride">
+      <svg viewBox="0 0 24 24"><use xlink:href="#icon-bike-24"></use></svg>
+    </button>
+    <button class="c-a03" role="tab" aria-label="Run">
+      <svg viewBox="0 0 24 24"><use xlink:href="#icon-shoe-24"></use></svg>
+    </button>
+    <button class="c-a03" role="tab" aria-label="Swim">
+      <svg viewBox="0 0 24 24"><use xlink:href="#icon-swim-24"></use></svg>
+    </button>
+  </div>
+
+  <section class="c-b17">
+    <h3 class="c-b18">This Year</h3>
+    <div class="c-b19">Distance <span data-mock="year-distance">3,240.0 km</span></div>
+    <div class="c-b19">Time <span data-mock="year-time">116h 5m</span></div>
+    <div class="c-b19">Elev Gain <span data-mock="year-elev">34,120 m</span></div>
+    <div class="c-b19"><span data-mock="year-count-label">Rides</span> <span data-mock="year-count">182</span></div>
+  </section>
+
+  <section class="c-b27">
+    <h3 class="c-b28">All-Time</h3>
+    <div class="c-b29">Distance <span data-mock="all-distance">41,882.0 km</span></div>
+    <div class="c-b29">Time <span data-mock="all-time">1402h 11m</span></div>
+    <div class="c-b29"><span data-mock="all-count-label">Rides</span> <span data-mock="all-count">1,204</span></div>
+  </section>
+
+  <!-- Gear lives near the bottom of the real page; only bikes for this account. -->
+  <aside class="c-c44">
+    <h4 class="c-c45">Gear</h4>
+    <ul class="c-c46">
+      <li>Trek Emonda S 1,002.7 km</li>
+      <li>ROG Elite 795.0 km</li>
+    </ul>
+  </aside>
+
+  <script>
+    // Switching sports rewrites the totals in place, as a client-rendered panel
+    // would. The Swim button is deliberately inert, standing in for a control
+    // that looks clickable but changes nothing.
+    const TOTALS = {
+      Ride: {
+        year: ['3,240.0 km', '116h 5m', '34,120 m', 'Rides', '182'],
+        all: ['41,882.0 km', '1402h 11m', 'Rides', '1,204'],
+      },
+      Run: {
+        year: ['318.0 km', '27h 50m', '2,140 m', 'Runs', '41'],
+        all: ['2,110.0 km', '194h 26m', 'Runs', '260'],
+      },
+    };
+
+    const setMock = (name, value) => {
+      const el = document.querySelector(`[data-mock="${name}"]`);
+      if (el) el.textContent = value;
+    };
+
+    document.querySelectorAll('[role="tab"]').forEach((tab) => {
+      tab.addEventListener('click', () => {
+        const sport = tab.getAttribute('aria-label');
+        const totals = TOTALS[sport];
+        if (!totals) return; // Swim: inert on purpose.
+
+        document.querySelectorAll('[role="tab"]').forEach((t) => t.classList.remove('is-active'));
+        tab.classList.add('is-active');
+
+        const [yd, yt, ye, yl, yc] = totals.year;
+        setMock('year-distance', yd);
+        setMock('year-time', yt);
+        setMock('year-elev', ye);
+        setMock('year-count-label', yl);
+        setMock('year-count', yc);
+
+        const [ad, at, al, ac] = totals.all;
+        setMock('all-distance', ad);
+        setMock('all-time', at);
+        setMock('all-count-label', al);
+        setMock('all-count', ac);
+      });
+    });
+  </script>
+</body>
+</html>

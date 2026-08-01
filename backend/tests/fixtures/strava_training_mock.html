@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Mock Strava training log</title>
+</head>
+<body>
+  <!--
+    A stand-in for the paginated activity list. As with the profile mock, the
+    class names are deliberately meaningless: the extractor must find rows by
+    structure and read them by their visible text.
+
+    Row 3 carries an explicit commute badge whose *name* gives no hint, and row 4
+    is a commute by name only with no badge. Between them they cover both commute
+    detection paths. Row 6 is a swim, which must be ignored downstream.
+  -->
+  <table class="c-t01">
+    <thead>
+      <tr><th>Date</th><th>Activity</th><th>Type</th><th>Distance</th><th>Time</th></tr>
+    </thead>
+    <tbody>
+      <tr class="c-t02">
+        <td>Jul 26, 2026</td><td>Weekend Loop</td><td>Ride</td><td>58.1 km</td><td>2:04:10</td>
+      </tr>
+      <tr class="c-t02">
+        <td>Jul 22, 2026</td><td>Morning Ride</td><td>Ride</td><td>32.4 km</td><td>1:11:23</td>
+      </tr>
+      <tr class="c-t02">
+        <td>Jul 28, 2026</td><td>Evening pootle</td><td>Ride</td>
+        <td>14.0 km</td><td>31:40</td>
+        <td><span class="c-badge" title="Commute">commute</span></td>
+      </tr>
+      <tr class="c-t02">
+        <td>Jul 27, 2026</td><td>Commute to work</td><td>Ride</td><td>14.2 km</td><td>33:01</td>
+      </tr>
+      <tr class="c-t02">
+        <td>Jul 25, 2026</td><td>Long Run</td><td>Run</td><td>12.1 km</td><td>1:06:33</td>
+      </tr>
+      <tr class="c-t02">
+        <td>Jul 24, 2026</td><td>Pool session</td><td>Swim</td><td>1.5 km</td><td>40:12</td>
+      </tr>
+    </tbody>
+  </table>
+</body>
+</html>
