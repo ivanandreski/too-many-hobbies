@@ -1,0 +1,78 @@
+#widget-hifi {
+
+  .hifi-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .hifi-item {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    align-items: center;
+
+    .hifi-image {
+      width: 100%;
+      height: 10rem;
+      border-radius: .75rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-shrink: 0;
+      font-size: 2.25rem;
+      background-color: #1a1a1a;
+      border: 1px solid #E8E8E8;
+    }
+
+    .hifi-text {
+      flex: 1 1 0%;
+      min-width: 0px;
+
+      .hifi-category {
+        letter-spacing: .1em;
+        text-transform: uppercase;
+        font-weight: 500;
+        font-size: 10px;
+        color: #6D6D78;
+        margin-bottom: .25rem;
+      }
+
+      .hifi-name {
+        font-size: 1rem;
+        line-height: 1.5rem;
+        font-weight: 700;
+        color: #242428;
+        margin-bottom: .375rem;
+        margin: 0;
+      }
+
+      .hifi-description {
+        line-height: 1.625;
+        font-size: .875rem;
+        color: #6D6D78;
+        margin: 0;
+      }
+    }
+  }
+
+  /* Entries stack on narrow screens, and only alternate once there is room to
+     sit side by side. nth-of-type rather than nth-child because the <template>
+     is a sibling of the entries and would otherwise offset the count by one. */
+  @media (min-width: 768px) {
+    .hifi-item {
+      &:nth-of-type(odd) {
+        flex-direction: row;
+      }
+
+      &:nth-of-type(even) {
+        flex-direction: row-reverse;
+      }
+
+      .hifi-image {
+        width: 12rem;
+        height: 9rem;
+      }
+    }
+  }
+}

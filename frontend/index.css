@@ -5,6 +5,7 @@
 @import url("widgets/letterboxd/letterboxd.css");
 @import url("widgets/gear/gear.css");
 @import url("widgets/strava/strava.css");
+@import url("widgets/hifi/hifi.css");
 
 body {
   max-width: 1600px;
