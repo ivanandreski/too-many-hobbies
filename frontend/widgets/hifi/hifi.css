@@ -1,91 +1,1061 @@
 /*
-  Hi-fi setup, drawn as a signal chain.
+  Hi-fi rack, drawn entirely in CSS — no images anywhere.
 
-  The bikes widget already uses the alternating image/text layout, so this one
-  deliberately reads differently: a single top-to-bottom column with each
-  component on a round tile, joined by a vertical line, so the list scans as the
-  path the sound takes rather than as a series of unrelated blocks.
+  The cabinet is a wooden shell (layered gradients for grain) around a dark
+  recess holding one faceplate per component. Each faceplate is brushed aluminium
+  with its own artwork matched to the real unit: a spinning platter and AT95E
+  cartridge for the turntable, the A-S301's knob layout for the receiver, reels
+  and LED level meters for the tape deck, a loading drawer for the DVD player.
+  Speakers are a bookshelf pair on stands, flanking the cabinet rather than
+  sitting in it.
 
-  Round tiles and the connector are the two things nothing else on the page uses.
+  Artwork is built from three generic slots (.hifi-art-a/b/c) plus their ::before
+  and ::after, giving nine shapes per unit. Each unit class repurposes those slots
+  for its own parts, which is what lets one HTML template serve every component
+  type.
+
+  Motion (platter spin, reels, level meters) only runs on the powered-up unit,
+  and not at all under prefers-reduced-motion.
 */
 #widget-hifi {
+  --wood-dark: #3A2317;
+  --wood-mid: #5A3A24;
+  --wood-light: #7A5236;
+  --recess: #0E0E10;
+  --face: #C8CBCE;
+  --face-dark: #9AA0A5;
+  --face-edge: #6E7478;
+  --ink: #23262A;
+  --led-off: #4A2118;
+  --led-on: #FF6A2B;
+  --unit-height: 4.25rem;
 
-  .hifi-list {
+  /* --- System layout ---------------------------------------------------- */
+
+  /* Towers flank the cabinet, as they would in a room. */
+  .hifi-system {
     display: flex;
-    flex-direction: column;
+    align-items: stretch;
+    justify-content: center;
+    gap: .625rem;
   }
 
-  .hifi-item {
+  .hifi-speakers {
+    display: flex;
+    flex-shrink: 0;
+  }
+
+  /* --- Speaker towers ---------------------------------------------------- */
+
+  .hifi-speaker {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: .375rem;
+    width: 4.5rem;
+    padding: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    cursor: pointer;
+    border-radius: .3125rem;
+
+    &:focus-visible {
+      outline: 2px solid var(--led-on);
+      outline-offset: 2px;
+    }
+  }
+
+  .hifi-speaker-box {
+    position: relative;
+    flex: 0 0 auto;
+    width: 100%;
+    /* Bookshelf proportions — taller than wide, but nothing like a tower. */
+    aspect-ratio: 3 / 4;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: .3125rem;
+    padding: .625rem .375rem;
+    border-radius: .3125rem;
+    /* Same wood as the cabinet, a shade darker so the rack stays the focus. */
+    background-color: var(--wood-dark);
+    background-image:
+      linear-gradient(120deg, rgba(255, 255, 255, .09) 0%, transparent 45%),
+      repeating-linear-gradient(91deg,
+        rgba(0, 0, 0, .2) 0 1px,
+        rgba(255, 255, 255, .03) 1px 2px,
+        transparent 2px 6px),
+      linear-gradient(180deg, var(--wood-mid), #22150D);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, .14),
+      0 10px 20px rgba(0, 0, 0, .28);
+    transition: transform .18s ease, filter .18s ease;
+  }
+
+  .hifi-speaker:hover .hifi-speaker-box {
+    filter: brightness(1.06);
+  }
+
+  .hifi-unit-active .hifi-speaker-box {
+    filter: brightness(1.1);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, .2),
+      0 0 0 1px rgba(255, 106, 43, .5),
+      0 10px 20px rgba(0, 0, 0, .3);
+  }
+
+  /* Drivers: two-way, so a dome tweeter above a single woofer. */
+  .hifi-speaker-tweeter,
+  .hifi-speaker-woofer {
+    border-radius: 50%;
+    flex-shrink: 0;
+    background-image:
+      repeating-radial-gradient(circle at 50% 50%,
+        rgba(255, 255, 255, .05) 0 2px,
+        rgba(0, 0, 0, .14) 2px 5px),
+      radial-gradient(circle at 50% 50%, #4A4E54 0 26%, transparent 26%),
+      radial-gradient(circle at 38% 30%, #2C2F33, #0E1012 78%);
+    box-shadow: inset 0 0 0 2px #5C6166, 0 1px 2px rgba(0, 0, 0, .45);
+  }
+
+  .hifi-speaker-tweeter {
+    width: 1rem;
+    height: 1rem;
+    /* A dome, not a cone: bright highlight and no ring pattern. */
+    background-image: radial-gradient(circle at 38% 30%, #E2E5E8, #71777D 65%, #22252A);
+  }
+
+  .hifi-speaker-woofer {
+    width: 2.75rem;
+    height: 2.75rem;
+  }
+
+  /* Stand: the boxes are bookshelf-sized, so they need lifting to rack height.
+     It flexes, which is what keeps the tops aligned with the cabinet. */
+  .hifi-speaker-stand {
+    position: relative;
+    flex: 1 1 auto;
+    width: .5rem;
+    min-height: 1.75rem;
+    background-image: linear-gradient(90deg, #2A2D31, #55595E 45%, #23262A);
+  }
+
+  /* Base plate */
+  .hifi-speaker-stand::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: 2.75rem;
+    height: .3125rem;
+    margin-left: -1.375rem;
+    border-radius: .125rem;
+    background-image: linear-gradient(180deg, #4A4E54, #1B1D20);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, .35);
+  }
+
+  /* Bass reflex port */
+  .hifi-speaker-port {
+    width: 1rem;
+    height: 1rem;
+    border-radius: 50%;
+    flex-shrink: 0;
+    background-image: radial-gradient(circle at 50% 35%, #000000, #17191C 70%);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, .9), 0 0 0 1px rgba(255, 255, 255, .07);
+  }
+
+  .hifi-speaker-label {
+    font-size: 8px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .12em;
+    color: #6D6D78;
+  }
+
+  /* --- Cabinet ---------------------------------------------------------- */
+
+  .hifi-cabinet {
+    flex: 1 1 auto;
+    min-width: 0;
+    border-radius: .5rem;
+    padding: .75rem;
+    background-color: var(--wood-mid);
+    /* Grain: fine vertical striping over a warm gradient, plus a soft sheen. */
+    background-image:
+      linear-gradient(115deg, rgba(255, 255, 255, .10) 0%, transparent 40%),
+      repeating-linear-gradient(91deg,
+        rgba(0, 0, 0, .16) 0 1px,
+        rgba(255, 255, 255, .04) 1px 2px,
+        transparent 2px 6px),
+      linear-gradient(180deg, var(--wood-light), var(--wood-dark));
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, .18),
+      inset 0 -2px 6px rgba(0, 0, 0, .5),
+      0 14px 28px rgba(0, 0, 0, .3);
+  }
+
+  /* Thin lid line so the shell reads as a box rather than a flat panel. */
+  .hifi-cabinet-top {
+    height: .375rem;
+    margin-bottom: .625rem;
+    border-radius: .1875rem;
+    background-image: linear-gradient(180deg, rgba(255, 255, 255, .22), rgba(0, 0, 0, .35));
+  }
+
+  .hifi-rack {
+    display: flex;
+    flex-direction: column;
+    gap: .4375rem;
+    padding: .5rem;
+    border-radius: .25rem;
+    background-color: var(--recess);
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, .85);
+  }
+
+  .hifi-cabinet-feet {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 1.5rem;
+
+    span {
+      width: 2.5rem;
+      height: .25rem;
+      margin-top: .5rem;
+      border-radius: 0 0 .1875rem .1875rem;
+      background-image: linear-gradient(180deg, var(--wood-dark), #17100A);
+    }
+  }
+
+  /* --- Faceplate -------------------------------------------------------- */
+
+  .hifi-unit {
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    border-radius: .1875rem;
+
+    &:focus-visible {
+      outline: 2px solid var(--led-on);
+      outline-offset: 2px;
+    }
+  }
+
+  .hifi-unit-face {
     position: relative;
     display: flex;
-    align-items: flex-start;
-    gap: 1rem;
-    padding-bottom: 1.75rem;
+    align-items: center;
+    gap: .75rem;
+    height: var(--unit-height);
+    padding: 0 .75rem;
+    overflow: hidden;
+    border-radius: .1875rem;
+    /* Brushed aluminium: vertical micro-striping over a top-lit gradient. */
+    background-color: var(--face);
+    background-image:
+      repeating-linear-gradient(90deg,
+        rgba(255, 255, 255, .5) 0 1px,
+        rgba(0, 0, 0, .045) 1px 3px),
+      linear-gradient(180deg, #DCDFE2 0%, var(--face) 45%, var(--face-dark) 100%);
+    border: 1px solid var(--face-edge);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, .8),
+      inset 0 -1px 0 rgba(0, 0, 0, .28),
+      0 1px 3px rgba(0, 0, 0, .6);
+    transition: transform .18s ease, filter .18s ease;
+  }
 
-    /* The chain ends with the last component, so no trailing line or gap. */
-    &:last-of-type {
-      padding-bottom: 0;
+  /* Powered up: the unit eases forward out of the rack. */
+  .hifi-unit-active .hifi-unit-face {
+    transform: translateX(.1875rem);
+    filter: brightness(1.06);
+  }
+
+  .hifi-unit:hover .hifi-unit-face {
+    filter: brightness(1.03);
+  }
+
+  /* Rack screws in the faceplate corners. */
+  .hifi-unit-face::before {
+    content: "";
+    position: absolute;
+    inset: .3125rem .4375rem;
+    pointer-events: none;
+    background-image:
+      radial-gradient(circle 3px at left 0 top 0, #868C92 0 60%, transparent 60%),
+      radial-gradient(circle 3px at right 0 top 0, #868C92 0 60%, transparent 60%),
+      radial-gradient(circle 3px at left 0 bottom 0, #868C92 0 60%, transparent 60%),
+      radial-gradient(circle 3px at right 0 bottom 0, #868C92 0 60%, transparent 60%);
+  }
+
+  .hifi-plate {
+    position: relative;
+    flex: 1 1 0%;
+    min-width: 0px;
+    display: flex;
+    flex-direction: column;
+    gap: .125rem;
+    /* Room for the ventilation slots drawn at the plate's right edge. */
+    padding-right: 3rem;
+  }
+
+  /* Ventilation slots — fills the bare stretch of faceplate the way real gear does. */
+  .hifi-plate::after {
+    content: "";
+    position: absolute;
+    right: .5rem;
+    top: 50%;
+    width: 2.25rem;
+    height: 1.625rem;
+    transform: translateY(-50%);
+    border-radius: .0625rem;
+    opacity: .5;
+    background-image: repeating-linear-gradient(180deg,
+      rgba(0, 0, 0, .32) 0 1px,
+      rgba(255, 255, 255, .25) 1px 2px,
+      transparent 2px 5px);
+  }
+
+  .hifi-unit-category {
+    font-size: 8px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .18em;
+    color: #6B7176;
+  }
+
+  .hifi-unit-name {
+    font-size: .8125rem;
+    font-weight: 700;
+    letter-spacing: -.01em;
+    color: var(--ink);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* Power lamp, dark until the unit is selected. */
+  .hifi-led {
+    flex-shrink: 0;
+    width: .375rem;
+    height: .375rem;
+    border-radius: 50%;
+    background-color: var(--led-off);
+    box-shadow: inset 0 0 2px rgba(0, 0, 0, .6);
+  }
+
+  .hifi-unit-active .hifi-led {
+    background-color: var(--led-on);
+    box-shadow: 0 0 6px 1px rgba(255, 106, 43, .85);
+  }
+
+  /* --- Photo faceplates -------------------------------------------------- */
+  /*
+    When a component supplies a photo it replaces the drawn artwork entirely. The
+    slot then takes its height from the image rather than --unit-height, because a
+    product photo is nothing like an 8:1 faceplate strip — cropping one to that
+    shape throws away the knobs and the whole point of using a photo.
+
+    Labels move onto a scrim at the bottom of the image, since a real faceplate
+    already carries its own branding and the drawn silkscreen would fight it.
+  */
+  .hifi-unit-has-photo {
+    .hifi-unit-face {
+      display: block;
+      height: auto;
+      padding: 0;
+      background-image: none;
+      background-color: #101012;
     }
 
-    /* Connector, drawn from below one tile to the top of the next. Sits behind
-       the tiles, which are opaque and raised, so it appears to join them. */
-    &:not(:last-of-type)::after {
+    /* Screws and vents belong to the drawn plate, not to a photograph. */
+    .hifi-unit-face::before,
+    .hifi-plate::after {
+      display: none;
+    }
+
+    .hifi-art {
+      display: none;
+    }
+
+    .hifi-plate {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      padding: 1.5rem .75rem .5rem;
+      background-image: linear-gradient(180deg, transparent, rgba(0, 0, 0, .8));
+    }
+
+    .hifi-unit-category {
+      color: rgba(255, 255, 255, .72);
+    }
+
+    .hifi-unit-name {
+      color: #FFFFFF;
+    }
+
+    .hifi-led {
+      position: absolute;
+      top: .5rem;
+      right: .5rem;
+    }
+  }
+
+  .hifi-unit-photo {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  /* Speaker towers: the photo replaces the drawn box and its drivers. The stand
+     still flexes below it, so a photographed speaker sits at the same height as
+     a drawn one. */
+  .hifi-speaker-has-photo {
+    .hifi-speaker-box {
+      display: none;
+    }
+  }
+
+  .hifi-speaker-photo {
+    display: block;
+    flex: 0 0 auto;
+    width: 100%;
+    /* Fixed box with contain, so photos of differing crops all present at the
+       same size instead of each dictating its own tower height. */
+    aspect-ratio: 3 / 4;
+    object-fit: contain;
+    object-position: bottom center;
+  }
+
+  /* --- Artwork scaffold -------------------------------------------------- */
+
+  .hifi-art {
+    position: relative;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    height: 100%;
+  }
+
+  .hifi-art-a,
+  .hifi-art-b,
+  .hifi-art-c {
+    position: relative;
+    display: block;
+  }
+
+  /* --- Turntable: platter, spindle, tonearm ------------------------------ */
+
+  .hifi-unit--turntable {
+    .hifi-art-a {
+      width: 2.75rem;
+      height: 2.75rem;
+      border-radius: 50%;
+      /* Concentric grooves, then the label, then the vinyl body. */
+      background-image:
+        repeating-radial-gradient(circle at 50% 50%,
+          rgba(255, 255, 255, .07) 0 1px,
+          transparent 1px 3px),
+        radial-gradient(circle at 50% 50%, #C24A2A 0 22%, transparent 22%),
+        radial-gradient(circle at 35% 30%, #3C3F44, #16181B 70%);
+      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .5), 0 1px 2px rgba(0, 0, 0, .4);
+    }
+
+    /* Spindle */
+    .hifi-art-a::after {
       content: "";
       position: absolute;
-      left: 1.5rem;
-      top: 3.25rem;
-      bottom: .25rem;
-      width: 2px;
-      margin-left: -1px;
-      border-radius: 9999px;
-      background-color: #E8E8E8;
-    }
-
-    .hifi-image {
-      position: relative;
-      z-index: 1;
-      width: 3rem;
-      height: 3rem;
+      inset: 0;
+      margin: auto;
+      width: .1875rem;
+      height: .1875rem;
       border-radius: 50%;
-      flex-shrink: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 1.25rem;
-      background-color: #242428;
-      border: 2px solid #FFFFFF;
-      box-shadow: 0 0 0 1px #E8E8E8;
+      background-color: #E6E8EA;
     }
 
-    .hifi-text {
-      flex: 1 1 0%;
-      min-width: 0px;
-      /* Nudged down so the category label sits optically level with the tile. */
-      padding-top: .125rem;
+    /* Tonearm, angled in across the platter, with a headshell at the tip. Taken
+       out of flow so it lies over the platter instead of beside it. */
+    .hifi-art-b {
+      position: absolute;
+      z-index: 2;
+      left: 1.375rem;
+      top: 1.0625rem;
+      width: 2.375rem;
+      height: .125rem;
+      border-radius: 9999px;
+      background-image: linear-gradient(90deg, #8A9095, #D5D8DA);
+      transform: rotate(-32deg);
+      transform-origin: right center;
+      filter: drop-shadow(0 1px 1px rgba(0, 0, 0, .5));
+    }
 
-      .hifi-category {
-        letter-spacing: .1em;
-        text-transform: uppercase;
-        font-weight: 600;
-        font-size: 10px;
-        color: #FC4C02;
-        margin: 0 0 .125rem;
-      }
+    /* Headshell and cartridge at the tip — the AT95E is the one part of this
+       system that has no faceplate of its own, so it is drawn instead. */
+    .hifi-art-b::before {
+      content: "";
+      position: absolute;
+      left: -.3125rem;
+      top: -.1875rem;
+      width: .5625rem;
+      height: .4375rem;
+      border-radius: .0625rem;
+      background-image:
+        linear-gradient(180deg, #C9CDD1 0 40%, #2B2E32 40%);
+      box-shadow: 0 0 0 .5px rgba(0, 0, 0, .5);
+    }
 
-      .hifi-name {
-        font-size: 1rem;
-        line-height: 1.5rem;
-        font-weight: 700;
-        color: #242428;
-        margin: 0 0 .25rem;
-      }
+    /* Pivot boss */
+    .hifi-art-b::after {
+      content: "";
+      position: absolute;
+      right: -.1875rem;
+      top: -.1875rem;
+      width: .5rem;
+      height: .5rem;
+      border-radius: 50%;
+      background-image: radial-gradient(circle at 35% 30%, #EDEFF0, #8B9095);
+    }
 
-      .hifi-description {
-        line-height: 1.625;
-        font-size: .875rem;
-        color: #6D6D78;
-        margin: 0;
-      }
+    /* Control cluster: the pitch fader and start/stop button that give an
+       SL-1200-style deck its face. The slot is the element's own background, so
+       the two pseudo-elements are free for the fader cap and the button. */
+    .hifi-art-c {
+      width: 1.625rem;
+      height: 2.5rem;
+      background-image: linear-gradient(180deg, rgba(0, 0, 0, .55), rgba(0, 0, 0, .3));
+      background-size: .3125rem 2rem;
+      background-position: right center;
+      background-repeat: no-repeat;
+      box-shadow: none;
+    }
+
+    /* Fader cap, parked slightly off centre the way a used one always is. */
+    .hifi-art-c::before {
+      content: "";
+      position: absolute;
+      right: -.09375rem;
+      top: .9375rem;
+      width: .625rem;
+      height: .375rem;
+      border-radius: .0625rem;
+      background-image: linear-gradient(180deg, #E8EBED, #989EA3);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, .5);
+    }
+
+    /* Start/stop */
+    .hifi-art-c::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 50%;
+      width: .8125rem;
+      height: .8125rem;
+      margin-top: -.40625rem;
+      border-radius: 50%;
+      background-image: radial-gradient(circle at 38% 30%, #EFF1F2, #8A9095 80%);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, .45), inset 0 0 0 1px rgba(0, 0, 0, .16);
+    }
+  }
+
+  /* --- Receiver: input selector, tone knobs, volume ---------------------- */
+  /* The A-S301 has no meters — it is a clean plate of knobs, so that is what is
+     drawn here rather than the VU dials a vintage receiver would carry. */
+
+  .hifi-unit--receiver {
+    /* Input selector */
+    .hifi-art-a {
+      width: 1.625rem;
+      height: 1.625rem;
+      border-radius: 50%;
+      background-image:
+        linear-gradient(180deg, rgba(255, 255, 255, .9) 0 42%, transparent 42%),
+        radial-gradient(circle at 34% 26%, #7C8288, #24272B 78%);
+      background-size: 2px 48%, 100% 100%;
+      background-position: center top, center;
+      background-repeat: no-repeat;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, .5), inset 0 0 0 1px rgba(255, 255, 255, .18);
+    }
+
+    /* Bass, treble and balance: three small knobs in a row. */
+    .hifi-art-b,
+    .hifi-art-b::before,
+    .hifi-art-b::after {
+      width: .625rem;
+      height: .625rem;
+      border-radius: 50%;
+      background-image: radial-gradient(circle at 35% 28%, #6E747A, #22252A 78%);
+      box-shadow: 0 1px 1px rgba(0, 0, 0, .45), inset 0 0 0 1px rgba(255, 255, 255, .12);
+    }
+
+    .hifi-art-b::before,
+    .hifi-art-b::after {
+      content: "";
+      position: absolute;
+      top: 0;
+    }
+
+    .hifi-art-b::before {
+      left: .875rem;
+    }
+
+    .hifi-art-b::after {
+      left: 1.75rem;
+    }
+
+    /* Volume, the largest control on the plate. */
+    .hifi-art-c {
+      width: 2.125rem;
+      height: 2.125rem;
+      margin-left: 1.75rem;
+      border-radius: 50%;
+      background-image:
+        linear-gradient(180deg, rgba(255, 255, 255, .95) 0 38%, transparent 38%),
+        repeating-conic-gradient(from 0deg, rgba(0, 0, 0, .16) 0 2deg, transparent 2deg 7deg),
+        radial-gradient(circle at 34% 26%, #8A9096, #1F2225 80%);
+      background-size: 2px 44%, 100% 100%, 100% 100%;
+      background-position: center top, center, center;
+      background-repeat: no-repeat;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, .55), inset 0 0 0 1px rgba(255, 255, 255, .2);
+    }
+  }
+
+  /* --- Cassette deck: window with reels, transport row ------------------- */
+
+  .hifi-unit--cassette-deck {
+    .hifi-art-a {
+      width: 3.25rem;
+      height: 1.875rem;
+      border-radius: .125rem;
+      /* Smoked window with a diagonal glare. */
+      background-color: #1A1C1F;
+      background-image: linear-gradient(120deg, rgba(255, 255, 255, .22) 0 18%, transparent 42%);
+      box-shadow: inset 0 0 0 1px #6E7478, inset 0 2px 4px rgba(0, 0, 0, .7);
+    }
+
+    /* Two reels behind the glass, joined by the tape path. */
+    .hifi-art-a::before,
+    .hifi-art-a::after {
+      content: "";
+      position: absolute;
+      top: .5rem;
+      width: .875rem;
+      height: .875rem;
+      border-radius: 50%;
+      background-image:
+        radial-gradient(circle at 50% 50%, #3A3D42 0 30%, transparent 30%),
+        conic-gradient(#6B7176 0 25%, #3A3D42 0 50%, #6B7176 0 75%, #3A3D42 0);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .2);
+    }
+
+    .hifi-art-a::before {
+      left: .4375rem;
+    }
+
+    .hifi-art-a::after {
+      right: .4375rem;
+    }
+
+    /* Transport buttons */
+    .hifi-art-b {
+      width: 2rem;
+      height: .5rem;
+      border-radius: .0625rem;
+      background-image: repeating-linear-gradient(90deg,
+        #DCDFE2 0 .3125rem,
+        #9AA0A5 .3125rem .375rem);
+      box-shadow: 0 1px 1px rgba(0, 0, 0, .4);
+    }
+
+    /* Stereo level meter: two bars that run green into amber into red. Width is
+       animated on the powered unit, so it behaves like a real level display. */
+    .hifi-art-c {
+      width: 2rem;
+      height: 1.125rem;
+      padding: .1875rem;
+      border-radius: .0625rem;
+      background-color: #0E1013;
+      box-shadow: inset 0 0 0 1px #6E7478;
+    }
+
+    .hifi-art-c::before,
+    .hifi-art-c::after {
+      content: "";
+      position: absolute;
+      left: .1875rem;
+      width: 55%;
+      height: .25rem;
+      background-image: linear-gradient(90deg,
+        #3BD16F 0 55%,
+        #E8B62C 55% 82%,
+        #E0492B 82%);
+      background-size: 2rem 100%;
+      /* Segmented, like an LED ladder rather than a solid bar. */
+      mask-image: repeating-linear-gradient(90deg, #000 0 2px, transparent 2px 3px);
+    }
+
+    .hifi-art-c::before {
+      top: .1875rem;
+    }
+
+    .hifi-art-c::after {
+      bottom: .1875rem;
+      width: 42%;
+    }
+  }
+
+  /* --- DVD player (used as a CD transport): drawer, display, buttons ------ */
+
+  .hifi-unit--dvd-player {
+    .hifi-art-a {
+      width: 3.5rem;
+      height: .875rem;
+      border-radius: .0625rem;
+      /* Drawer slot with a disc edge just visible inside. */
+      background-color: #15171A;
+      background-image: linear-gradient(180deg, rgba(0, 0, 0, .8) 0 45%, #2C3035 45%);
+      box-shadow: inset 0 0 0 1px #6E7478, inset 0 2px 3px rgba(0, 0, 0, .8);
+    }
+
+    .hifi-art-a::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: .0625rem;
+      width: 2rem;
+      height: .1875rem;
+      margin-left: -1rem;
+      border-radius: 9999px;
+      background-image: linear-gradient(90deg, #7C8288, #E6E8EA, #7C8288);
+    }
+
+    /* Track display */
+    .hifi-art-b {
+      width: 1.75rem;
+      height: .875rem;
+      border-radius: .0625rem;
+      background-color: #0A1512;
+      background-image: repeating-linear-gradient(90deg,
+        rgba(120, 220, 160, .55) 0 3px,
+        transparent 3px 7px);
+      box-shadow: inset 0 0 0 1px #6E7478, 0 0 4px rgba(120, 220, 160, .18);
+    }
+
+    /* Play / stop / skip */
+    .hifi-art-c {
+      width: 1.75rem;
+      height: .4375rem;
+      border-radius: .0625rem;
+      background-image: repeating-linear-gradient(90deg,
+        #DCDFE2 0 .25rem,
+        #9AA0A5 .25rem .3125rem);
+    }
+  }
+
+  /* --- Readout ---------------------------------------------------------- */
+
+  .hifi-readout {
+    display: flex;
+    align-items: flex-start;
+    gap: .75rem;
+    margin-top: 1.25rem;
+    padding: .875rem 1rem;
+    border-radius: .5rem;
+    background-color: #F7F7FA;
+    border: 1px solid #E8E8E8;
+  }
+
+  .hifi-readout-icon {
+    flex-shrink: 0;
+    width: 2.25rem;
+    height: 2.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.125rem;
+    border-radius: 50%;
+    background-color: #242428;
+  }
+
+  .hifi-readout-text {
+    flex: 1 1 0%;
+    min-width: 0px;
+  }
+
+  .hifi-readout-category {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    color: #FC4C02;
+    margin: 0 0 .125rem;
+  }
+
+  .hifi-readout-name {
+    font-size: 1rem;
+    line-height: 1.375rem;
+    font-weight: 700;
+    color: #242428;
+    margin: 0 0 .25rem;
+  }
+
+  .hifi-readout-description {
+    font-size: .875rem;
+    line-height: 1.6;
+    color: #6D6D78;
+    margin: 0;
+  }
+
+  /* Spec rows: where details that have no faceplate of their own live, the
+     turntable's cartridge being the reason this exists. */
+  .hifi-specs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .25rem 1.25rem;
+    margin: .625rem 0 0;
+    padding-top: .625rem;
+    border-top: 1px solid #E8E8E8;
+  }
+
+  .hifi-specs[hidden] {
+    display: none;
+  }
+
+  .hifi-spec {
+    display: flex;
+    align-items: baseline;
+    gap: .375rem;
+  }
+
+  .hifi-spec-label {
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    color: #9A9AA5;
+  }
+
+  .hifi-spec-value {
+    font-size: .8125rem;
+    font-weight: 600;
+    color: #242428;
+    margin: 0;
+  }
+
+  /* Back to the unit a sub-component belongs to. */
+  .hifi-readout-back {
+    display: inline-flex;
+    align-items: center;
+    margin: 0 0 .375rem;
+    padding: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    font-size: .75rem;
+    font-weight: 600;
+    color: #6D6D78;
+    cursor: pointer;
+
+    &:hover {
+      color: #FC4C02;
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--led-on);
+      outline-offset: 2px;
+    }
+  }
+
+  .hifi-readout-back[hidden] {
+    display: none;
+  }
+
+  /* --- Sub-component chips ----------------------------------------------- */
+
+  .hifi-parts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+    margin-top: .75rem;
+  }
+
+  .hifi-parts[hidden] {
+    display: none;
+  }
+
+  .hifi-part {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    padding: .375rem .5rem .375rem .375rem;
+    border: 1px solid #E8E8E8;
+    border-radius: 9999px;
+    background-color: #FFFFFF;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition: border-color .15s ease, box-shadow .15s ease;
+
+    &:hover {
+      border-color: #FC4C02;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, .08);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--led-on);
+      outline-offset: 2px;
+    }
+  }
+
+  .hifi-part-icon {
+    flex-shrink: 0;
+    width: 1.5rem;
+    height: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: .8125rem;
+    border-radius: 50%;
+    background-color: #F0F0F3;
+  }
+
+  .hifi-part-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+  }
+
+  .hifi-part-category {
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    color: #9A9AA5;
+  }
+
+  .hifi-part-name {
+    font-size: .8125rem;
+    font-weight: 600;
+    color: #242428;
+  }
+
+  .hifi-part-chevron {
+    color: #9A9AA5;
+    font-size: 1rem;
+    line-height: 1;
+  }
+
+  /* --- Motion ----------------------------------------------------------- */
+
+  /* Only the powered-up unit moves, so the rack is still at rest. */
+  .hifi-unit-active.hifi-unit--turntable .hifi-art-a {
+    animation: hifi-spin 3.4s linear infinite;
+  }
+
+  .hifi-unit-active.hifi-unit--cassette-deck .hifi-art-a::before,
+  .hifi-unit-active.hifi-unit--cassette-deck .hifi-art-a::after {
+    animation: hifi-spin 1.8s linear infinite;
+  }
+
+  /* The deck's level meters move independently, as a stereo pair would. */
+  .hifi-unit-active.hifi-unit--cassette-deck .hifi-art-c::before {
+    animation: hifi-level-left 2.4s ease-in-out infinite alternate;
+  }
+
+  .hifi-unit-active.hifi-unit--cassette-deck .hifi-art-c::after {
+    animation: hifi-level-right 3.1s ease-in-out infinite alternate;
+  }
+
+  /* Nested here, with the selectors repeated verbatim, so these match the
+     specificity of the animation rules above and win on source order. Placed
+     outside #widget-hifi they would carry one class fewer and silently lose. */
+  @media (prefers-reduced-motion: reduce) {
+    .hifi-unit-active.hifi-unit--turntable .hifi-art-a,
+    .hifi-unit-active.hifi-unit--cassette-deck .hifi-art-a::before,
+    .hifi-unit-active.hifi-unit--cassette-deck .hifi-art-a::after,
+    .hifi-unit-active.hifi-unit--cassette-deck .hifi-art-c::before,
+    .hifi-unit-active.hifi-unit--cassette-deck .hifi-art-c::after {
+      animation: none;
+    }
+
+    .hifi-unit-face {
+      transition: none;
+    }
+  }
+
+  /* Narrow columns. The towers would leave the rack too little room, so the
+     cabinet takes the full width and the pair moves below it, still side by
+     side. Secondary artwork and the vents go rather than crushing the name. */
+  @container (max-width: 30rem) {
+    .hifi-system {
+      flex-wrap: wrap;
+    }
+
+    .hifi-cabinet {
+      order: -1;
+      flex-basis: 100%;
+    }
+
+    .hifi-speaker {
+      width: 4rem;
+    }
+
+    /* Side by side, one label between them is enough — repeating it under each
+       box reads as two separate pairs. */
+    .hifi-speakers-right .hifi-speaker-label {
+      visibility: hidden;
+    }
+  }
+
+  @container (max-width: 26rem) {
+    .hifi-art-c {
+      display: none;
+    }
+
+    .hifi-unit--receiver .hifi-art-b {
+      display: none;
+    }
+
+    .hifi-plate {
+      padding-right: 0;
+    }
+
+    .hifi-plate::after {
+      display: none;
     }
   }
 }
+
+@keyframes hifi-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes hifi-level-left {
+  from {
+    width: 30%;
+  }
+
+  to {
+    width: 88%;
+  }
+}
+
+@keyframes hifi-level-right {
+  from {
+    width: 24%;
+  }
+
+  to {
+    width: 78%;
+  }
+}
+

@@ -2,22 +2,110 @@
   <div id="hifi-summary" class="widget-summary">
     <h3>🎧 Hi-Fi</h3>
     <p>
-      Records sound best on something you built up piece by piece. This is the stack everything gets played
-      through — one component at a time, mostly bought second hand.
+      Records sound best on something you built up piece by piece. Here's the rack — tap a unit to power it up.
     </p>
   </div>
   <div id="widget-hifi" class="widget">
-    <div class="hifi-list">
-      <template id="hifi-widget-template">
-        <div class="hifi-item">
-          <div class="hifi-image"></div>
-          <div class="hifi-text">
-            <p class="hifi-category"></p>
-            <h4 class="hifi-name"></h4>
-            <p class="hifi-description"></p>
-          </div>
+    <!--
+      The cabinet is drawn entirely in CSS: no images. Each unit's faceplate art
+      (platter, VU meters, tape reels, CD drawer) is selected by a class derived
+      from its category in the data, so hifi.js stays a plain renderer and the
+      artwork lives in hifi.css.
+
+      Faceplates carry only the silkscreen labels a real unit would. The
+      description is printed to the readout below the cabinet when a unit is
+      selected, which keeps the rack looking like a rack.
+    -->
+    <!--
+      Speakers flank the cabinet rather than sitting in it, the way they do in a
+      real setup. One "Speakers" entry in the data renders both towers; hifi.js
+      keeps them in sync so selecting either shows the same details.
+    -->
+    <div class="hifi-system">
+      <div class="hifi-speakers hifi-speakers-left"></div>
+
+      <div class="hifi-cabinet">
+        <div class="hifi-cabinet-top" aria-hidden="true"></div>
+        <div class="hifi-rack">
+          <template id="hifi-widget-template">
+            <button type="button" class="hifi-unit" aria-pressed="false" data-hifi-selectable>
+              <span class="hifi-unit-face">
+                <!-- Used instead of the drawn artwork when the component has a photo. -->
+                <img class="hifi-unit-photo" alt="" hidden>
+                <span class="hifi-art" aria-hidden="true">
+                  <span class="hifi-art-a"></span>
+                  <span class="hifi-art-b"></span>
+                  <span class="hifi-art-c"></span>
+                </span>
+                <span class="hifi-plate">
+                  <span class="hifi-unit-category"></span>
+                  <span class="hifi-unit-name"></span>
+                </span>
+                <span class="hifi-led" aria-hidden="true"></span>
+              </span>
+            </button>
+          </template>
         </div>
-      </template>
+        <div class="hifi-cabinet-feet" aria-hidden="true">
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+
+      <div class="hifi-speakers hifi-speakers-right"></div>
+    </div>
+
+    <!-- Bookshelf pair, so each box sits on a stand to reach rack height. -->
+    <template id="hifi-speaker-template">
+      <button type="button" class="hifi-speaker" aria-pressed="false" data-hifi-selectable>
+        <img class="hifi-speaker-photo" alt="" hidden>
+        <span class="hifi-speaker-box" aria-hidden="true">
+          <span class="hifi-speaker-tweeter"></span>
+          <span class="hifi-speaker-woofer"></span>
+          <span class="hifi-speaker-port"></span>
+        </span>
+        <span class="hifi-speaker-stand" aria-hidden="true"></span>
+        <span class="hifi-speaker-label"></span>
+      </button>
+    </template>
+
+    <!-- Selecting a unit prints its details here. -->
+    <div class="hifi-readout" aria-live="polite">
+      <span class="hifi-readout-icon" id="hifi-readout-icon" aria-hidden="true"></span>
+      <div class="hifi-readout-text">
+        <!-- Shown only while a sub-component is open, to get back to its parent. -->
+        <button type="button" class="hifi-readout-back" id="hifi-readout-back" hidden></button>
+        <p class="hifi-readout-category" id="hifi-readout-category"></p>
+        <h4 class="hifi-readout-name" id="hifi-readout-name"></h4>
+        <p class="hifi-readout-description" id="hifi-readout-description"></p>
+        <!-- Optional per-component specs; hidden when a component has none. -->
+        <dl class="hifi-specs" id="hifi-readout-specs">
+          <template id="hifi-spec-template">
+            <div class="hifi-spec">
+              <dt class="hifi-spec-label"></dt>
+              <dd class="hifi-spec-value"></dd>
+            </div>
+          </template>
+        </dl>
+
+        <!--
+          Sub-components: parts fitted to a unit rather than sitting in the rack.
+          The cartridge is the reason this exists — it has no faceplate of its
+          own, so it gets a chip here that opens its own readout.
+        -->
+        <div class="hifi-parts" id="hifi-readout-parts" hidden>
+          <template id="hifi-part-template">
+            <button type="button" class="hifi-part">
+              <span class="hifi-part-icon"></span>
+              <span class="hifi-part-text">
+                <span class="hifi-part-category"></span>
+                <span class="hifi-part-name"></span>
+              </span>
+              <span class="hifi-part-chevron" aria-hidden="true">›</span>
+            </button>
+          </template>
+        </div>
+      </div>
     </div>
   </div>
 </div>

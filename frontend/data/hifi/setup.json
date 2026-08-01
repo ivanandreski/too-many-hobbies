@@ -2,33 +2,89 @@
   "data": [
     {
       "category": "Turntable",
-      "name": "Placeholder Model",
-      "description": "The centerpiece of the setup. Belt-drive with a moving magnet cartridge — warm, detailed sound straight from the groove.",
-      "icon": "💿"
+      "name": "Audio-Technica AT-LP120",
+      "photo": "/assets/hifi/turntable.jpg",
+      "description": "The centerpiece of the setup. Direct drive, so it gets up to speed instantly and holds it — and it still wears the AT95E it shipped with, because nothing about it needed fixing.",
+      "icon": "💿",
+      "specs": [
+        {
+          "label": "Drive",
+          "value": "Direct drive"
+        },
+        {
+          "label": "Speeds",
+          "value": "33⅓ / 45 / 78 rpm"
+        }
+      ],
+      "parts": [
+        {
+          "category": "Cartridge",
+          "name": "Audio-Technica AT95E",
+          "description": "The cartridge the LP120 arrived with, and still the one on the arm. An elliptical stylus tracks more of the groove wall than the conical ones it replaced, which is most of why records here sound like records.",
+          "icon": "🪡",
+          "specs": [
+            {
+              "label": "Type",
+              "value": "Moving magnet"
+            },
+            {
+              "label": "Stylus",
+              "value": "Elliptical, bonded"
+            },
+            {
+              "label": "Mount",
+              "value": "Half-inch, on the stock headshell"
+            }
+          ]
+        }
+      ]
     },
     {
       "category": "Receiver",
-      "name": "Placeholder Model",
-      "description": "Powers everything. An integrated amplifier with clean 2x80W output that handles both analog and digital sources without breaking a sweat.",
-      "icon": "🎛️"
-    },
-    {
-      "category": "Speakers",
-      "name": "Placeholder Model",
-      "description": "2-way bookshelf speakers with a bass reflex port. They fill the room surprisingly well for their size — punchy lows and crisp highs.",
-      "icon": "🔊"
+      "name": "Yamaha A-S301",
+      "photo": "/assets/hifi/receiver.jpg",
+      "description": "Powers everything and does all the switching. Tone controls when a record needs them, Pure Direct when it doesn't, and a built-in DAC so the digital sources land here too.",
+      "icon": "🎛️",
+      "specs": [
+        {
+          "label": "Power",
+          "value": "60 W × 2 (8 Ω)"
+        },
+        {
+          "label": "Inputs",
+          "value": "Phono, line, optical, coaxial"
+        }
+      ]
     },
     {
       "category": "Cassette Deck",
-      "name": "Placeholder Model",
-      "description": "There's something magical about tape. Dolby B/C noise reduction keeps things clean, and making mixtapes is still one of my favorite things.",
+      "name": "Telefunken HC650",
+      "photo": "/assets/hifi/cassette-deck.jpg",
+      "description": "There's something magical about tape. Making mixtapes is still one of my favourite things, and this deck is the reason the habit never died.",
       "icon": "📼"
     },
     {
-      "category": "CD Player",
-      "name": "Placeholder Model",
-      "description": "Sometimes you just want to drop a disc in and press play. Single disc, digital output — simple and reliable.",
+      "category": "DVD Player",
+      "name": "LG DVD Player",
+      "description": "A DVD player from around 2005 that has never once played a DVD here — it lives in the rack purely as a CD transport. Drop a disc in, press play, done.",
       "icon": "💽"
+    },
+    {
+      "category": "Speakers",
+      "name": "Polk ES20",
+      "photo": "/assets/hifi/speaker.png",
+      "description": "Bookshelf pair on stands, doing far more than their size suggests. Punchy lows from the rear port and highs that stay clean when the volume goes up.",
+      "icon": "🔊",
+      "specs": [
+        {
+          "label": "Type",
+          "value": "2-way bookshelf"
+        },
+        {
+          "label": "Drivers",
+          "value": "1\" tweeter, 6.5\" woofer"
+        }
+      ]
     }
   ]
 }
