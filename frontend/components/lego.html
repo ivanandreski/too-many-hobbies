@@ -1,0 +1,45 @@
+<div class="widget-container">
+  <div id="lego-summary" class="widget-summary">
+    <h2>🧱 LEGO</h2>
+    <p>
+      Mostly Speed Champions — small enough to finish in an evening, detailed enough to keep on the shelf
+      afterwards. Here are the most recent builds.
+    </p>
+  </div>
+  <div id="widget-lego" class="widget">
+    <div class="lego-widget">
+      <div class="lego-header">
+        <div class="lego-header-left">
+          <span class="lego-brand">LEGO</span>
+          <span class="lego-badge">My Sets</span>
+        </div>
+        <span class="lego-total" id="lego-total"></span>
+      </div>
+      <div>
+        <template id="lego-widget-template">
+          <div class="lego-set-row">
+            <div class="lego-set-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                class="lucide lucide-box lego-set-icon-svg">
+                <path
+                  d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z">
+                </path>
+                <path d="m3.3 7 8.7 5 8.7-5"></path>
+                <path d="M12 22V12"></path>
+              </svg>
+            </div>
+            <div class="lego-set-info">
+              <p class="lego-set-name"></p>
+              <p class="lego-set-meta"></p>
+            </div>
+            <span class="lego-set-theme"></span>
+          </div>
+        </template>
+      </div>
+      <div class="lego-footer">
+        <p class="lego-footer-text">Recent builds</p>
+      </div>
+    </div>
+  </div>
+</div>

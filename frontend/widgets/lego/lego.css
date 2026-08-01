@@ -1,0 +1,143 @@
+#widget-lego {
+
+  .lego-widget {
+    border-radius: .75rem;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .1);
+    background-color: #FFFFFF;
+
+    .lego-header {
+      padding: 1rem 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: #FFD500;
+      border-bottom: 3px solid #E3C200;
+
+      .lego-header-left {
+        display: flex;
+        align-items: center;
+        gap: .75rem;
+      }
+
+      .lego-brand {
+        font-size: 1.125rem;
+        font-weight: 800;
+        letter-spacing: -.025em;
+        color: #000000;
+      }
+
+      .lego-badge {
+        font-size: .75rem;
+        padding: .125rem .5rem;
+        border-radius: 9999px;
+        font-weight: 600;
+        background-color: #E3000B;
+        color: #FFFFFF;
+      }
+
+      .lego-total {
+        font-size: .75rem;
+        font-weight: 700;
+        color: #000000;
+      }
+    }
+
+    .lego-set-row {
+      padding: .75rem 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      cursor: pointer;
+      transition: opacity .15s;
+
+      &:hover {
+        opacity: .8;
+      }
+
+      /* Striping and dividers are positional, so CSS owns them rather than the
+         renderer tagging each row. nth-of-type/last-of-type rather than the
+         -child variants because the <template> is a sibling of the rows and
+         would otherwise offset the count by one. */
+      &:nth-of-type(odd) {
+        background-color: #FFFFFF;
+      }
+
+      &:nth-of-type(even) {
+        background-color: #FAFAFA;
+      }
+
+      &:not(:last-of-type) {
+        border-bottom: 1px solid #E5E5E5;
+      }
+
+      .lego-set-icon {
+        width: 3rem;
+        height: 3rem;
+        border-radius: .25rem;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #F5F5F5;
+        border: 2px solid #E5E5E5;
+
+        .lego-set-icon-svg {
+          width: 1.5rem;
+          height: 1.5rem;
+          color: #999999;
+        }
+      }
+
+      .lego-set-info {
+        flex: 1 1 0%;
+        min-width: 0px;
+
+        .lego-set-name {
+          font-size: .875rem;
+          font-weight: 700;
+          color: #000000;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          margin: 0;
+        }
+
+        .lego-set-meta {
+          font-size: .75rem;
+          color: #666666;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          margin: 0;
+        }
+      }
+
+      .lego-set-theme {
+        font-size: 10px;
+        font-weight: 700;
+        padding: .125rem .5rem;
+        border-radius: 9999px;
+        flex-shrink: 0;
+        background-color: #E3000B;
+        color: #000000;
+      }
+    }
+
+    .lego-footer {
+      padding: .625rem 1.25rem;
+      text-align: center;
+      background-color: #F5F5F5;
+      border-top: 1px solid #E5E5E5;
+
+      .lego-footer-text {
+        font-size: 10px;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: .1em;
+        color: #999999;
+        margin: 0;
+      }
+    }
+  }
+}

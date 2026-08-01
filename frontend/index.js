@@ -2,6 +2,7 @@ import { LetterboxdData } from "./widgets/letterboxd/letterboxd.js";
 import { GearData } from "./widgets/gear/gear.js"
 import { StravaData } from "./widgets/strava/strava.js"
 import { HifiData } from "./widgets/hifi/hifi.js"
+import { LegoData } from "./widgets/lego/lego.js"
 
 window.onload = async () => {
   // Components must all be in the DOM before any widget populates them —
@@ -12,13 +13,15 @@ window.onload = async () => {
     renderComponent("gear"),
     renderComponent("cycling"),
     renderComponent("hifi"),
+    renderComponent("lego"),
   ]);
 
   await Promise.all([
     LetterboxdData.init(),
     GearData.init(),
     StravaData.init(),
-    HifiData.init()
+    HifiData.init(),
+    LegoData.init()
   ]);
 }
 
