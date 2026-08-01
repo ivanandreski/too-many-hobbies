@@ -14,27 +14,21 @@ class BikeRoleConfig:
     """
     Maps one Strava bike onto one role key in bikes.json.
 
+    Bike photos are deliberately not here. Strava exposes no gear images, and the
+    photos never change, so they live in components/gear.html as plain markup
+    rather than being round-tripped through generated data.
+
     Attributes:
         role_key:         Output key in bikes.json, read directly by gear.js.
         strava_gear_name: Bike name on Strava, matched case-insensitively.
-        image:            Optional photo URL. Strava exposes no gear images, so
-                          this is curated by hand and preserved across runs.
     """
     role_key: str
     strava_gear_name: str
-    image: str | None = None
 
 
 BIKE_ROLE_CONFIGS: list[BikeRoleConfig] = [
-    BikeRoleConfig(
-        role_key="mainBike",
-        strava_gear_name="Trek Emonda S",
-    ),
-    BikeRoleConfig(
-        role_key="commuter",
-        strava_gear_name="ROG Elite",
-        image="https://www.njuskalo.hr/image-w920x690/cestovni-bicikli/rog-elite-slika-180379053.jpg",
-    ),
+    BikeRoleConfig(role_key="mainBike", strava_gear_name="Trek Emonda S"),
+    BikeRoleConfig(role_key="commuter", strava_gear_name="ROG Elite"),
 ]
 
 

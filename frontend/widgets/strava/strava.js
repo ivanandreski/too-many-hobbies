@@ -123,6 +123,28 @@ const renderSummary = (widgetEl, sport, stravaData) => {
   setText(widgetEl, "[data-strava-secondary-label]", sport.secondary.label);
 };
 
+// The lifetime totals strip. Optional in the payload, so the whole block stays
+// hidden rather than showing an empty row when a scrape could not read it.
+const renderAllTime = (widgetEl, stravaData) => {
+  const stripEl = widgetEl.querySelector("[data-strava-alltime]");
+  if (!stripEl) return;
+
+  const allTime = stravaData.allTime;
+  if (!allTime || !allTime.distanceMetres) {
+    stripEl.hidden = true;
+    return;
+  }
+
+  const parts = [`${formatSummaryDistanceKm(allTime.distanceMetres)} km`];
+  if (allTime.activityCount) {
+    const label = (stravaData.countLabel || "").toLowerCase();
+    parts.push(`${allTime.activityCount.toLocaleString("en-US")} ${label}`.trim());
+  }
+
+  setText(widgetEl, "[data-strava-alltime-summary]", parts.join(" · "));
+  stripEl.hidden = false;
+};
+
 const renderActivities = (widgetEl, sport, activities) => {
   const templateEl = widgetEl.querySelector("[data-strava-activity-template]");
   const containerEl = templateEl.parentNode;
@@ -213,8 +235,10 @@ const initStravaWidget = async (widgetEl) => {
     return;
   }
 
-  // Summary is sport-level, so it is rendered once rather than per tab.
+  // Summary and lifetime totals are sport-level, so both are rendered once
+  // rather than per tab.
   renderSummary(widgetEl, sport, stravaData);
+  renderAllTime(widgetEl, stravaData);
 
   const selectGroup = (index) => {
     renderActivities(widgetEl, sport, groups[index].activities || []);

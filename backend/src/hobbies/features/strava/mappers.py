@@ -3,7 +3,7 @@ Mappers from scraped Strava data to the frontend's JSON payloads.
 
 Three outputs come from one scrape:
 
-  bikes.json    keyed object of role → bike, with all-time kilometres
+  bikes.json    keyed object of role → bike name and all-time kilometres
   cycling.json  year totals for rides, plus two activity groups
   running.json  year totals for runs, plus one activity group
 
@@ -66,19 +66,17 @@ def build_bikes_payload(
     role_configs = BIKE_ROLE_CONFIGS if role_configs is None else role_configs
 
     return {
-        config.role_key: _map_bike(_find_bike(bikes, config), config)
+        config.role_key: _map_bike(_find_bike(bikes, config))
         for config in role_configs
     }
 
 
-def _map_bike(bike: RawBike, config: BikeRoleConfig) -> dict:
-    entry = {
+def _map_bike(bike: RawBike) -> dict:
+    """Scraped name and all-time distance. Photos are static markup, not data."""
+    return {
         "name": bike.name,
         MILEAGE_FIELD: _metres_to_kilometres(bike.distance_metres),
     }
-    if config.image:
-        entry["image"] = config.image
-    return entry
 
 
 def _find_bike(bikes: list[RawBike], config: BikeRoleConfig) -> RawBike:

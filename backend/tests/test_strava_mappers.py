@@ -24,11 +24,7 @@ TARGETS = [
 
 ROLE_CONFIGS = [
     BikeRoleConfig(role_key="mainBike", strava_gear_name="Trek Emonda S"),
-    BikeRoleConfig(
-        role_key="commuter",
-        strava_gear_name="ROG Elite",
-        image="https://example.test/rog.jpg",
-    ),
+    BikeRoleConfig(role_key="commuter", strava_gear_name="ROG Elite"),
 ]
 
 
@@ -84,11 +80,15 @@ class TestBikesPayload:
         assert payload["mainBike"]["milage"] == 1002.7
         assert payload["commuter"]["milage"] == 795.0
 
-    def test_includes_image_only_where_configured(self):
+    def test_emits_only_name_and_mileage(self):
+        """
+        Photos are static markup in components/gear.html, not data. Emitting an
+        image field would put an unchanging value into a generated file.
+        """
         payload = build_bikes_payload(scraped().bikes, ROLE_CONFIGS)
 
-        assert "image" not in payload["mainBike"]
-        assert payload["commuter"]["image"] == "https://example.test/rog.jpg"
+        for entry in payload.values():
+            assert set(entry) == {"name", "milage"}
 
     def test_ignores_bikes_no_role_claims(self):
         payload = build_bikes_payload(scraped().bikes, ROLE_CONFIGS)
