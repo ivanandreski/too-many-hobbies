@@ -1,0 +1,64 @@
+<div class="widget-container">
+  <div id="music-summary" class="widget-summary">
+    <h2>🎶 Records</h2>
+    <p>
+      The collection lives on Discogs. Newest arrivals up top, and whatever has actually been on the
+      turntable lately underneath.
+    </p>
+  </div>
+  <div id="widget-music" class="widget">
+    <div class="music-widget">
+      <div class="music-header">
+        <div class="music-header-left">
+          <span class="music-brand">Discogs</span>
+          <span class="music-badge">Collection</span>
+        </div>
+      </div>
+
+      <div class="music-section-header">
+        <div class="music-section-bar-orange"></div>
+        <p class="music-section-label">Latest Additions</p>
+        <span class="music-section-count" id="music-additions-count"></span>
+      </div>
+      <div id="music-additions-list"></div>
+
+      <div class="music-divider"></div>
+
+      <div class="music-spins-header">
+        <div class="music-section-bar-green"></div>
+        <p class="music-section-label">Latest Spins</p>
+        <span class="music-section-count" id="music-spins-count"></span>
+      </div>
+      <div id="music-spins-list"></div>
+
+      <div class="music-footer">
+        <p class="music-footer-text">Powered by Discogs</p>
+      </div>
+
+      <!--
+        Both sections render identical rows, so they share one template. It sits
+        outside either list so each list contains only its rows, which is what
+        lets the CSS pick out the last row of each section for its divider.
+      -->
+      <template id="music-widget-template">
+        <div class="music-record-row">
+          <div class="music-record-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+              class="lucide lucide-disc-3 music-record-icon-svg">
+              <circle cx="12" cy="12" r="10"></circle>
+              <path d="M6 12c0-1.7.7-3.2 1.8-4.2"></path>
+              <circle cx="12" cy="12" r="2"></circle>
+              <path d="M18 12c0 1.7-.7 3.2-1.8 4.2"></path>
+            </svg>
+          </div>
+          <div class="music-record-info">
+            <p class="music-record-album"></p>
+            <p class="music-record-artist"></p>
+            <p class="music-record-format"></p>
+          </div>
+        </div>
+      </template>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,174 @@
+#widget-music {
+
+  .music-widget {
+    border-radius: .75rem;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .1);
+    background-color: #333333;
+
+    .music-header {
+      padding: 1rem 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #444444;
+
+      .music-header-left {
+        display: flex;
+        align-items: center;
+        gap: .75rem;
+      }
+
+      .music-brand {
+        font-size: 1.125rem;
+        font-weight: 700;
+        letter-spacing: -.025em;
+        font-style: italic;
+        color: #FFFFFF;
+      }
+
+      .music-badge {
+        font-size: .75rem;
+        padding: .125rem .5rem;
+        border-radius: 9999px;
+        background-color: #444444;
+        color: #CCCCCC;
+      }
+    }
+
+    .music-section-header {
+      padding: 1rem 1.25rem .5rem;
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+
+    /* Same row as above, with less breathing room since a divider precedes it. */
+    .music-spins-header {
+      padding: .75rem 1.25rem .5rem;
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+
+    .music-section-bar-orange {
+      width: .25rem;
+      height: 1rem;
+      border-radius: 9999px;
+      background-color: #FF5500;
+    }
+
+    .music-section-bar-green {
+      width: .25rem;
+      height: 1rem;
+      border-radius: 9999px;
+      background-color: #1DB954;
+    }
+
+    .music-section-label {
+      font-size: 10px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      color: #999999;
+      margin: 0;
+    }
+
+    .music-section-count {
+      font-size: 10px;
+      margin-left: auto;
+      color: #666666;
+    }
+
+    .music-record-row {
+      padding: .75rem 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      cursor: pointer;
+      transition: opacity .15s;
+
+      &:hover {
+        opacity: .8;
+      }
+
+      /* Each section's own last row drops its divider, since the section already
+         ends with one. Rows are the only children of their list, so :last-child
+         resolves per section rather than across the whole widget. */
+      &:not(:last-child) {
+        border-bottom: 1px solid #3D3D3D;
+      }
+
+      .music-record-icon {
+        width: 3rem;
+        height: 3rem;
+        border-radius: .25rem;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #2A2A2A;
+        border: 1px solid #444444;
+
+        .music-record-icon-svg {
+          width: 1.5rem;
+          height: 1.5rem;
+          color: #666666;
+        }
+      }
+
+      .music-record-info {
+        flex: 1 1 0%;
+        min-width: 0px;
+
+        .music-record-album {
+          font-size: .875rem;
+          font-weight: 500;
+          color: #FFFFFF;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          margin: 0;
+        }
+
+        .music-record-artist {
+          font-size: .75rem;
+          color: #999999;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          margin: 0;
+        }
+
+        .music-record-format {
+          font-size: 10px;
+          color: #666666;
+          /* Shorthand, not margin-top plus a later margin:0 — that order resets
+             the value it was meant to keep. */
+          margin: .125rem 0 0;
+        }
+      }
+    }
+
+    .music-divider {
+      margin: .25rem 1.25rem;
+      border-top: 1px solid #444444;
+    }
+
+    .music-footer {
+      padding: .625rem 1.25rem;
+      text-align: center;
+      background-color: #2A2A2A;
+      border-top: 1px solid #444444;
+
+      .music-footer-text {
+        font-size: 10px;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: .1em;
+        color: #666666;
+        margin: 0;
+      }
+    }
+  }
+}

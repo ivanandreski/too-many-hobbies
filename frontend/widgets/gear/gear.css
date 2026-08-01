@@ -47,8 +47,9 @@
       .bike-name-title {
         font-size: 1rem;
         line-height: 1.5rem;
-        margin-bottom: .375rem;
-        margin: 0;
+        /* Shorthand, so resetting the other sides does not discard the bottom
+           margin — `margin-bottom` followed by `margin: 0` loses the value. */
+        margin: 0 0 .375rem;
       }
 
       .bike-description {

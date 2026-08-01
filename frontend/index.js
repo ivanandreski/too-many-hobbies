@@ -3,6 +3,7 @@ import { GearData } from "./widgets/gear/gear.js"
 import { StravaData } from "./widgets/strava/strava.js"
 import { HifiData } from "./widgets/hifi/hifi.js"
 import { LegoData } from "./widgets/lego/lego.js"
+import { MusicData } from "./widgets/music/music.js"
 
 window.onload = async () => {
   // Components must all be in the DOM before any widget populates them —
@@ -14,6 +15,7 @@ window.onload = async () => {
     renderComponent("cycling"),
     renderComponent("hifi"),
     renderComponent("lego"),
+    renderComponent("music"),
   ]);
 
   await Promise.all([
@@ -21,7 +23,8 @@ window.onload = async () => {
     GearData.init(),
     StravaData.init(),
     HifiData.init(),
-    LegoData.init()
+    LegoData.init(),
+    MusicData.init()
   ]);
 }
 

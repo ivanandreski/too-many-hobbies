@@ -1,0 +1,18 @@
+{
+  "data": {
+    "latestAdditions": [
+      { "artist": "Steely Dan", "album": "Aja", "year": 1977, "format": "Vinyl, LP" },
+      { "artist": "Fleetwood Mac", "album": "Rumours", "year": 1977, "format": "Vinyl, LP" },
+      { "artist": "Radiohead", "album": "OK Computer", "year": 1997, "format": "Vinyl, 2xLP" },
+      { "artist": "Miles Davis", "album": "Kind of Blue", "year": 1959, "format": "Vinyl, LP" },
+      { "artist": "Daft Punk", "album": "Random Access Memories", "year": 2013, "format": "Vinyl, 2xLP" }
+    ],
+    "latestSpins": [
+      { "artist": "Tame Impala", "album": "Currents", "year": 2015, "format": "Vinyl, 2xLP" },
+      { "artist": "Khruangbin", "album": "Con Todo El Mundo", "year": 2018, "format": "Vinyl, LP" },
+      { "artist": "Steely Dan", "album": "Aja", "year": 1977, "format": "Vinyl, LP" },
+      { "artist": "Mac DeMarco", "album": "Salad Days", "year": 2014, "format": "Vinyl, LP" },
+      { "artist": "Sade", "album": "Diamond Life", "year": 1984, "format": "Vinyl, LP" }
+    ]
+  }
+}
