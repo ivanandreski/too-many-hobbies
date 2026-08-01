@@ -46,57 +46,64 @@ body {
   }
 }
 
+/* --- Widget groups ------------------------------------------------------- */
+
+.widget-group {
+  margin-bottom: 4.5rem;
+}
+
+.widget-group-title {
+  font-size: 2rem;
+  line-height: 2.5rem;
+  font-weight: bold;
+  letter-spacing: -0.025em;
+  padding-bottom: .75rem;
+  margin: 0 0 2.5rem;
+  border-bottom: 1px solid #E8E8E8;
+}
+
 /*
-  Widgets flow into columns rather than sitting in hand-assigned ones.
+  Widgets inside a group flow into as many columns as fit.
 
-  A CSS grid is the obvious choice but the wrong one here: the widgets differ
-  wildly in height (the film diary is several times the height of the bikes
-  block), and grid aligns rows, which would leave large holes. Multi-column
-  balances the columns by height instead — masonry in effect — and needs no
-  per-widget placement, so adding a widget never means rebalancing the markup.
-
-  One column on phones, two from 900px, three on wide desktops.
+  auto-fill, not auto-fit: auto-fit collapses empty tracks, which would stretch a
+  group holding a single widget across the entire page — a LEGO list 1850px wide.
+  Keeping the empty tracks means every widget on the page is the same width
+  regardless of how many its group contains. min() stops a track exceeding the
+  container on narrow screens, which would overflow.
 */
-#widgets-container {
-  column-count: 1;
-  column-gap: 3rem;
+.widget-group-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 28rem), 1fr));
+  gap: 2.5rem 3rem;
+  align-items: start;
 }
 
-@media (min-width: 900px) {
-  #widgets-container {
-    column-count: 2;
-  }
+/*
+  Each slot is a query container, so widgets size themselves against their own
+  width rather than the viewport's. That decoupling is the point: a widget can be
+  440px wide on a 1600px screen, and a viewport-based media query would have no
+  idea. Widgets that need to reflow (the film diary, the bikes list) query this.
+*/
+.widget-group-grid > div {
+  container-type: inline-size;
+  min-width: 0;
 }
 
-@media (min-width: 1500px) {
-  #widgets-container {
-    column-count: 3;
-  }
-}
-
-/* Never split a widget across a column break. */
-#widgets-container > div {
-  break-inside: avoid;
-}
-
-/* Spacing between stacked widgets. This used to fall out of the summary
-   heading's margins by accident; it is deliberate now. */
-.widget-container {
-  margin-bottom: 3.5rem;
-}
-
+/* A widget's own title sits below its group heading, so it is a step smaller. */
 .widget-summary {
-  h2 {
-    font-size: 2.25rem;
-    line-height: 2.5rem;
+  margin-bottom: 1.25rem;
+
+  h3 {
+    font-size: 1.5rem;
+    line-height: 2rem;
     font-weight: bold;
     letter-spacing: -0.025em;
-    color: hsl(var(--foreground));
-    margin-bottom: 1rem;
+    margin: 0 0 .5rem;
   }
 
   p {
     line-height: 1.625;
-    font-size: 1.125rem;
+    font-size: 1rem;
+    margin: 0;
   }
 }

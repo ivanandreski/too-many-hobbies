@@ -56,9 +56,10 @@
     }
   }
 
-  /* Side by side once the column is wide enough, alternating which side the
-     photo sits on. */
-  @media (min-width: 768px) {
+  /* Side by side once this widget's own column is wide enough, alternating which
+     side the photo sits on. Keyed to the container rather than the viewport,
+     since the column count decides the width available here. */
+  @container (min-width: 30rem) {
     .widget-gear-entry {
       margin-bottom: 1rem;
 

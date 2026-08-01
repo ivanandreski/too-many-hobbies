@@ -26,18 +26,37 @@
     </p>
   </section>
   <!--
-    Widgets are a flat list rather than hand-assigned columns: the layout flows
-    them into one, two or three columns depending on viewport width, so nothing
-    here has to be rebalanced when a widget is added or grows.
+    Widgets are grouped by hobby. Within a group they flow into as many columns
+    as the width allows, so nothing here needs rebalancing when a widget is
+    added or grows. Grouping also keeps related widgets together — Cycling beside
+    its bikes, Records beside the hi-fi that plays them — which a single
+    height-balanced layout pulled apart.
   -->
   <div id="widgets-container">
-    <div id="film-component"></div>
-    <div id="cycling-component"></div>
-    <div id="running-component"></div>
-    <div id="gear-component"></div>
-    <div id="hifi-component"></div>
-    <div id="music-component"></div>
-    <div id="lego-component"></div>
+    <section class="widget-group">
+      <h2 class="widget-group-title">Activities</h2>
+      <div class="widget-group-grid">
+        <div id="cycling-component"></div>
+        <div id="running-component"></div>
+        <div id="gear-component"></div>
+      </div>
+    </section>
+
+    <section class="widget-group">
+      <h2 class="widget-group-title">Media</h2>
+      <div class="widget-group-grid">
+        <div id="film-component"></div>
+        <div id="music-component"></div>
+        <div id="hifi-component"></div>
+      </div>
+    </section>
+
+    <section class="widget-group">
+      <h2 class="widget-group-title">Misc</h2>
+      <div class="widget-group-grid">
+        <div id="lego-component"></div>
+      </div>
+    </section>
   </div>
 </body>
 

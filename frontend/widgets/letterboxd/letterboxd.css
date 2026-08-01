@@ -188,9 +188,12 @@
          the rating. The year is the most expendable — the title identifies the
          film — so it is dropped and its space handed to the rating.
 
-         Nested here, rather than beside #view-more, so these selectors carry the
-         same specificity as the .movie-cell rule they need to override. */
-      @media (max-width: 560px) {
+         A container query, not a media query: the widget's width depends on how
+         many columns its group has, not on the viewport, so it can be 440px wide
+         on a 1600px screen. Nested here rather than beside #view-more so these
+         selectors carry the same specificity as the .movie-cell rule they
+         override. */
+      @container (max-width: 560px) {
         .movie-release-year {
           display: none;
         }
