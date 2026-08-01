@@ -182,6 +182,32 @@
           color: var(--color-letterboxd-orange);
         }
       }
+
+      /* A phone-width column cannot fit every cell of a row: the widths above
+         total 100%, so nothing shrinks and the release year ends up overlapping
+         the rating. The year is the most expendable — the title identifies the
+         film — so it is dropped and its space handed to the rating.
+
+         Nested here, rather than beside #view-more, so these selectors carry the
+         same specificity as the .movie-cell rule they need to override. */
+      @media (max-width: 560px) {
+        .movie-release-year {
+          display: none;
+        }
+
+        .movie-name {
+          width: 45%;
+          font-size: 1rem;
+        }
+
+        .movie-rating {
+          width: 22%;
+        }
+
+        .movie-like {
+          width: 8%;
+        }
+      }
     }
   }
 
@@ -202,4 +228,5 @@
       }
     }
   }
+
 }

@@ -10,10 +10,16 @@
 @import url("widgets/music/music.css");
 
 body {
-  max-width: 1600px;
+  max-width: 1920px;
   margin: 0 auto;
   padding: 1rem;
   font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", Segoe UI Symbol, "Noto Color Emoji";
+}
+
+@media (min-width: 640px) {
+  body {
+    padding: 1.5rem 2rem;
+  }
 }
 
 .widget {
@@ -40,10 +46,43 @@ body {
   }
 }
 
+/*
+  Widgets flow into columns rather than sitting in hand-assigned ones.
+
+  A CSS grid is the obvious choice but the wrong one here: the widgets differ
+  wildly in height (the film diary is several times the height of the bikes
+  block), and grid aligns rows, which would leave large holes. Multi-column
+  balances the columns by height instead — masonry in effect — and needs no
+  per-widget placement, so adding a widget never means rebalancing the markup.
+
+  One column on phones, two from 900px, three on wide desktops.
+*/
 #widgets-container {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 2rem;
+  column-count: 1;
+  column-gap: 3rem;
+}
+
+@media (min-width: 900px) {
+  #widgets-container {
+    column-count: 2;
+  }
+}
+
+@media (min-width: 1500px) {
+  #widgets-container {
+    column-count: 3;
+  }
+}
+
+/* Never split a widget across a column break. */
+#widgets-container > div {
+  break-inside: avoid;
+}
+
+/* Spacing between stacked widgets. This used to fall out of the summary
+   heading's margins by accident; it is deliberate now. */
+.widget-container {
+  margin-bottom: 3.5rem;
 }
 
 .widget-summary {

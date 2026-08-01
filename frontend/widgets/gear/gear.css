@@ -1,22 +1,18 @@
 #widget-gear {
 
+  /* Stacked by default: at phone width a fixed 12rem photo beside the text left
+     the description in a ~144px gutter, wrapping every sentence to five lines.
+     The photo goes full width and the text sits below it until there is room. */
   .widget-gear-entry {
     display: flex;
+    flex-direction: column;
     gap: 1.25rem;
     align-items: center;
-    margin-bottom: 1rem;
-
-    &:nth-child(even) {
-      flex-direction: row;
-    }
-
-    &:nth-child(odd) {
-      flex-direction: row-reverse;
-    }
+    margin-bottom: 2rem;
 
     .widget-gear-entry-image-container {
-      width: 12rem;
-      height: 9rem;
+      width: 100%;
+      height: 12rem;
       border-radius: .75rem;
       display: flex;
       justify-content: center;
@@ -56,6 +52,27 @@
         line-height: 1.625;
         font-size: .875rem;
         margin: 0;
+      }
+    }
+  }
+
+  /* Side by side once the column is wide enough, alternating which side the
+     photo sits on. */
+  @media (min-width: 768px) {
+    .widget-gear-entry {
+      margin-bottom: 1rem;
+
+      &:nth-child(even) {
+        flex-direction: row;
+      }
+
+      &:nth-child(odd) {
+        flex-direction: row-reverse;
+      }
+
+      .widget-gear-entry-image-container {
+        width: 12rem;
+        height: 9rem;
       }
     }
   }
