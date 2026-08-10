@@ -150,8 +150,47 @@ def parse_activity_date(text: str, today: date | None = None) -> str:
     return _midnight_iso(parsed)
 
 
+def _parse_numeric_date(text: str) -> date | None:
+    """
+    Parse a slash-separated date, e.g. the "Mon, 8/10/2026" the activity list uses.
+
+    8/10 is ambiguous, so the weekday name decides: both readings are tried and
+    the one whose weekday matches wins. That is stronger than assuming a locale —
+    it is derived from the page itself. With no weekday to check, month-first is
+    assumed, which is what Strava renders in English.
+    """
+    match = re.search(r"\b(\d{1,2})\s*/\s*(\d{1,2})\s*/\s*(\d{4})\b", text)
+    if not match:
+        return None
+
+    first, second, year = (int(group) for group in match.groups())
+    weekday_match = re.search(r"\b(mon|tue|wed|thu|fri|sat|sun)", text, re.IGNORECASE)
+    weekday = weekday_match.group(1).lower() if weekday_match else None
+
+    candidates = []
+    for month, day in ((first, second), (second, first)):
+        try:
+            candidates.append(date(year, month, day))
+        except ValueError:
+            continue
+
+    if not candidates:
+        return None
+
+    if weekday:
+        for candidate in candidates:
+            if candidate.strftime("%a").lower() == weekday:
+                return candidate
+
+    return candidates[0]
+
+
 def _parse_absolute_date(text: str, reference_date: date) -> date | None:
     """Parse a written date, defaulting a missing year to the reference year."""
+    numeric = _parse_numeric_date(text)
+    if numeric is not None:
+        return numeric
+
     month_match = re.search(r"[A-Za-z]{3,}", text)
     day_match = re.search(r"\b(\d{1,2})\b(?!:)", text)
     if not month_match or not day_match:

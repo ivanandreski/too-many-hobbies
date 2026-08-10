@@ -56,9 +56,11 @@ ACTIVITY_TARGETS: list[ActivityTarget] = [
     ActivityTarget(key="runs", sport="run", is_commute=None, count=5),
 ]
 
-# Safety net: a hard cap so a markup change that stops the parser from
-# recognising rows cannot walk the entire activity history.
-MAX_TRAINING_PAGES = 12
+# Safety net per sport: a hard cap so a markup change that stops the parser from
+# recognising rows cannot walk the entire activity history. Lower than it was,
+# because the list is now filtered by sport and the wanted activities appear on
+# the first page or two rather than being buried under a different sport.
+MAX_TRAINING_PAGES = 5
 
 # Fallback commute detection. Strava's activity list may not expose the commute
 # flag as markup; when it does not, an activity whose name matches this is

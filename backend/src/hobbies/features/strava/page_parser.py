@@ -14,12 +14,14 @@ import re
 
 from hobbies.features.strava.config import COMMUTE_NAME_PATTERNS
 from hobbies.features.strava.constants import (
+    ALL_TIME_HEADER,
     COUNT_LABELS,
     DISTANCE_LABELS,
     RIDE_SPORT_KEYWORDS,
     RUN_SPORT_KEYWORDS,
     SPORT_CELL_LABELS,
     TIME_LABELS,
+    YEAR_TBODY_ID_SUFFIX,
 )
 from hobbies.features.strava.models import RawActivity, RawBike, RawSportTotals
 from hobbies.features.strava.text import (
@@ -37,6 +39,21 @@ _VALUE_PATTERN = re.compile(r"\d")
 _DISTANCE_IN_LINE = re.compile(
     r"\d[\d,\s]*(?:\.\d+)?\s*(?:km|kilometers?|mi|miles?)\b", re.IGNORECASE
 )
+
+# A cell that is entirely a distance: "28.46 km". Excludes "250 m" elevation.
+_DISTANCE_CELL = re.compile(r"^\d[\d,\s]*(?:\.\d+)?\s*(?:km|kilometers?|mi|miles?)$", re.IGNORECASE)
+
+# A cell that is entirely a duration: "59:28", "1:18:57", "1h 5m". Deliberately
+# does not match a bare "250 m" — that is elevation, not 250 minutes.
+_DURATION_CELL = re.compile(
+    r"^(?:\d{1,3}:\d{2}(?::\d{2})?|\d+\s*h(?:\s*\d+\s*m)?(?:\s*\d+\s*s)?)$", re.IGNORECASE
+)
+
+# A cell that is entirely an elevation: "250 m".
+_ELEVATION_CELL = re.compile(r"^\d[\d,\s]*(?:\.\d+)?\s*m$", re.IGNORECASE)
+
+# Cells that are row controls rather than data.
+_ACTION_CELL = re.compile(r"^(?:edit|delete|share)(?:\s+(?:edit|delete|share))*$", re.IGNORECASE)
 
 # Durations inside a mixed line: "12h 34m", "1:11:23", "42:38".
 _DURATION_IN_LINE = re.compile(
@@ -84,6 +101,71 @@ def parse_sport_totals(section_text: str) -> RawSportTotals:
         moving_time_seconds=parse_duration_seconds(time_text) if time_text else 0,
         activity_count=_try_parse_count(count_text),
     )
+
+
+def parse_sport_stats_panel(panel: dict) -> tuple[RawSportTotals | None, RawSportTotals | None]:
+    """
+    Read one sport's panel into (year totals, all-time totals).
+
+    The panel arrives as a list of tbodies with their rows already split into
+    cells, so this is structural rather than textual: the year figures are the
+    tbody whose id ends in "-ytd", and the lifetime figures are the tbody that
+    follows the one-row "All-Time" header.
+
+    Either may be None — a sport with no recorded activity has no rows — which
+    the caller must treat as absent rather than zero.
+    """
+    tbodies = panel.get("tbodies") or []
+
+    year_rows = next(
+        (tb["rows"] for tb in tbodies if tb.get("id", "").endswith(YEAR_TBODY_ID_SUFFIX)),
+        None,
+    )
+    all_time_rows = _rows_after_header(tbodies, ALL_TIME_HEADER)
+
+    return _rows_to_totals(year_rows), _rows_to_totals(all_time_rows)
+
+
+def _rows_after_header(tbodies: list[dict], header: str) -> list[list[str]] | None:
+    """
+    Find the first data tbody following a single-row header tbody.
+
+    The lifetime figures have no id of their own; they are simply the block after
+    a tbody containing just "All-Time".
+    """
+    for index, tbody in enumerate(tbodies):
+        rows = tbody.get("rows") or []
+        is_header = len(rows) == 1 and len(rows[0]) == 1 and rows[0][0].strip().lower() == header
+
+        if not is_header:
+            continue
+
+        for following in tbodies[index + 1:]:
+            following_rows = following.get("rows") or []
+            if any(len(row) >= 2 for row in following_rows):
+                return following_rows
+    return None
+
+
+def _rows_to_totals(rows: list[list[str]] | None) -> RawSportTotals | None:
+    """
+    Convert label/value cell pairs into totals.
+
+    Reuses parse_sport_totals by rendering the rows back into the "Label value"
+    lines it already handles, so the unit conversions and the label matching stay
+    in one tested place.
+    """
+    if not rows:
+        return None
+
+    lines = [f"{row[0]} {row[1]}" for row in rows if len(row) >= 2]
+    if not lines:
+        return None
+
+    try:
+        return parse_sport_totals("\n".join(lines))
+    except (PageParseError, ValueError):
+        return None
 
 
 def _label_value_pairs(section_text: str) -> list[tuple[str, str]]:
@@ -220,37 +302,37 @@ def parse_activity_rows(rows: list[dict]) -> list[RawActivity]:
 
 
 def _parse_activity_row(row: dict) -> RawActivity | None:
-    """Parse one row, returning None when it does not look like an activity."""
-    text = row.get("text", "")
-    lines = _row_cells(text)
-    if not lines:
+    """
+    Parse one row, returning None when it does not look like an activity.
+
+    Works cell by cell rather than scanning the row's whole text. That matters
+    because a row reads Sport | Date | Title | Time | Distance | Elevation, and
+    scanning for a duration after the distance picks up the *elevation* — "250 m"
+    parsed as 250 minutes. Identifying each value by the shape of its own cell
+    keeps metres and minutes apart.
+    """
+    cells = _row_cells(row.get("text", ""))
+    if not cells:
         return None
 
-    distance_match = _DISTANCE_IN_LINE.search(text)
-    if not distance_match:
+    distance_cell = next((cell for cell in cells if _DISTANCE_CELL.match(cell)), None)
+    if distance_cell is None:
         return None
 
-    # The duration must not be the distance again, so search past it.
-    duration_match = _DURATION_IN_LINE.search(text, distance_match.end())
-    if duration_match is None:
-        duration_match = _DURATION_IN_LINE.search(text[: distance_match.start()])
-
-    start_date_local = _first_parsable_date(lines)
+    start_date_local = _first_parsable_date(cells)
     if start_date_local is None:
         return None
 
-    name = _activity_name(lines, start_date_local)
-    sport = _activity_sport(text)
+    duration_cell = next((cell for cell in cells if _DURATION_CELL.match(cell)), None)
+    name = _activity_name(cells, start_date_local)
 
     return RawActivity(
         name=name,
         start_date_local=start_date_local,
-        distance_metres=parse_distance_metres(distance_match.group()),
-        moving_time_seconds=(
-            parse_duration_seconds(duration_match.group()) if duration_match else 0
-        ),
-        sport=sport,
-        is_commute=bool(row.get("commuteMarkup")) or _looks_like_commute(name),
+        distance_metres=parse_distance_metres(distance_cell),
+        moving_time_seconds=parse_duration_seconds(duration_cell) if duration_cell else 0,
+        sport=_activity_sport(cells),
+        is_commute=bool(row.get("isCommute")) or _looks_like_commute(name),
     )
 
 
@@ -275,38 +357,44 @@ def _first_parsable_date(lines: list[str]) -> str | None:
     return None
 
 
-def _activity_name(lines: list[str], parsed_date: str) -> str:
+def _activity_name(cells: list[str], parsed_date: str) -> str:
     """
     Pick the activity title from a row's cells.
 
-    The title is the first cell that is not the date, not a bare measurement and
-    not the sport-type cell. Skipping the type cell matters because its position
-    relative to the title is not guaranteed.
+    The title is the first cell that is not the date, a measurement, the
+    sport-type cell, or the row's Edit/Delete/Share controls.
     """
-    for line in lines:
-        if _DISTANCE_IN_LINE.fullmatch(line) or _DURATION_IN_LINE.fullmatch(line):
+    for cell in cells:
+        if _DISTANCE_CELL.match(cell) or _DURATION_CELL.match(cell):
             continue
-        if line.casefold() in SPORT_CELL_LABELS:
+        if _ELEVATION_CELL.match(cell) or _ACTION_CELL.match(cell):
+            continue
+        if cell.casefold() in SPORT_CELL_LABELS:
             continue
         try:
-            if parse_activity_date(line) == parsed_date:
+            if parse_activity_date(cell) == parsed_date:
                 continue
         except TextParseError:
             pass
-        return line
-    return lines[0]
+        return cell
+    return cells[0]
 
 
-def _activity_sport(text: str) -> str:
+def _activity_sport(cells: list[str]) -> str:
     """
-    Identify the sport from a row's text.
+    Identify the sport from a row's cells.
 
-    Returns Strava's own wording when a known keyword appears, so downstream
-    classification stays keyword-based rather than an exact-match whitelist.
+    Prefers a cell that is *exactly* a sport name — the row has a dedicated sport
+    column — and only falls back to keyword matching across the row when no such
+    cell exists.
     """
-    lowered = text.lower()
+    for cell in cells:
+        if cell.casefold() in SPORT_CELL_LABELS:
+            return cell
+
+    joined = " ".join(cells).lower()
     for keyword in RIDE_SPORT_KEYWORDS + RUN_SPORT_KEYWORDS:
-        if keyword in lowered:
+        if keyword in joined:
             return keyword
     return ""
 

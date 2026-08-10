@@ -201,11 +201,22 @@ class TestActivityRows:
         names = [activity.name for activity in parse_activity_rows(rows)]
         assert "Date" not in names
 
-    def test_detects_a_commute_from_its_badge_when_the_name_gives_nothing(self, training_page):
+    def test_detects_a_commute_from_a_checked_control(self, training_page):
+        """The name gives nothing here, so only the checked box can flag it."""
         rows = training_page.evaluate(extractors.ACTIVITY_ROWS)
 
         by_name = {a.name: a for a in parse_activity_rows(rows)}
         assert by_name["Evening pootle"].is_commute is True
+
+    def test_ignores_an_unchecked_commute_control(self, training_page):
+        """
+        The live page carries a hidden edit form with an unchecked "Commute"
+        checkbox on every row. Testing the markup for the word flagged all of them.
+        """
+        rows = training_page.evaluate(extractors.ACTIVITY_ROWS)
+
+        by_name = {a.name: a for a in parse_activity_rows(rows)}
+        assert by_name["Lunch Ride"].is_commute is False
 
     def test_detects_a_commute_from_its_name_when_there_is_no_badge(self, training_page):
         rows = training_page.evaluate(extractors.ACTIVITY_ROWS)

@@ -1,9 +1,9 @@
 // Renders the Strava cycling and running widgets.
 //
 // Both sports share one set of markup (components/cycling.html and
-// components/running.html) and differ only in the middle summary stat: cycling
-// shows average speed, running shows average pace. Each widget root carries a
-// data-strava-sport attribute naming which of the two it is.
+// components/running.html). Each widget root carries a data-strava-sport
+// attribute naming which of the two it is; that selects the per-sport formatting
+// below, where cycling shows per-activity speed and running per-activity pace.
 //
 // Each data file holds one or more *groups*. Cycling has two — rides and
 // commutes, which Strava distinguishes with a boolean `commute` flag on every
@@ -26,24 +26,40 @@ const METRES_PER_KILOMETRE = 1000;
 
 const ACTIVE_TAB_CLASS = "strava-tab-active";
 
-// Per-sport rendering rules. `secondary` describes the middle summary stat and
-// the matching per-activity metric. Count labels come from the group, not here,
-// because cycling's two groups need different words ("Rides" vs "Commutes").
+// Per-sport rendering rules.
+//
+// `summary` and `activity` are separate on purpose. The middle summary stat used
+// to be an average speed derived from the year's distance and time, but Strava's
+// yearly figure is elapsed time — including every stop — so that average came out
+// well below the real riding pace. Total time is the same data reported without
+// the misleading division. Per-activity speed and pace stay, because there the
+// time behaves like moving time.
+//
+// Count labels come from the payload, since cycling's groups need different
+// words ("Rides" vs "Commutes").
 const SPORTS = {
   cycling: {
     dataPath: "/data/strava/cycling.json",
-    secondary: {
-      label: "Avg Speed",
-      unit: "km/h",
+    summary: {
+      label: "Time",
+      unit: "",
+      format: (distanceMetres, movingTimeSeconds) => formatHoursMinutes(movingTimeSeconds),
+    },
+    activity: {
+      label: "km/h",
       format: (distanceMetres, movingTimeSeconds) =>
         formatSpeedKmh(distanceMetres, movingTimeSeconds),
     },
   },
   running: {
     dataPath: "/data/strava/running.json",
-    secondary: {
-      label: "Avg Pace",
-      unit: "/km",
+    summary: {
+      label: "Time",
+      unit: "",
+      format: (distanceMetres, movingTimeSeconds) => formatHoursMinutes(movingTimeSeconds),
+    },
+    activity: {
+      label: "/km",
       format: (distanceMetres, movingTimeSeconds) =>
         formatPacePerKm(distanceMetres, movingTimeSeconds),
     },
@@ -82,6 +98,15 @@ const formatPacePerKm = (distanceMetres, movingTimeSeconds) => {
   return `${minutes}:${padTwoDigits(seconds)}`;
 };
 
+// Totals rather than a single activity: "136h 11m", or "44m" under an hour.
+const formatHoursMinutes = (totalSeconds) => {
+  const hours = Math.floor(totalSeconds / SECONDS_PER_HOUR);
+  const minutes = Math.round((totalSeconds % SECONDS_PER_HOUR) / SECONDS_PER_MINUTE);
+
+  if (hours === 0) return `${minutes}m`;
+  return `${hours.toLocaleString("en-US")}h ${minutes}m`;
+};
+
 // "1:11:23" when it ran over an hour, "42:38" when it did not.
 const formatDuration = (totalSeconds) => {
   const hours = Math.floor(totalSeconds / SECONDS_PER_HOUR);
@@ -117,10 +142,10 @@ const renderSummary = (widgetEl, sport, stravaData) => {
   setText(
     widgetEl,
     "[data-strava-secondary-value]",
-    sport.secondary.format(summary.distanceMetres, summary.movingTimeSeconds),
+    sport.summary.format(summary.distanceMetres, summary.movingTimeSeconds),
   );
-  setText(widgetEl, "[data-strava-secondary-unit]", sport.secondary.unit);
-  setText(widgetEl, "[data-strava-secondary-label]", sport.secondary.label);
+  setText(widgetEl, "[data-strava-secondary-unit]", sport.summary.unit);
+  setText(widgetEl, "[data-strava-secondary-label]", sport.summary.label);
 };
 
 // The lifetime totals strip. Optional in the payload, so the whole block stays
@@ -164,9 +189,9 @@ const renderActivities = (widgetEl, sport, activities) => {
     setText(
       clone,
       "[data-strava-activity-secondary]",
-      sport.secondary.format(activity.distanceMetres, activity.movingTimeSeconds),
+      sport.activity.format(activity.distanceMetres, activity.movingTimeSeconds),
     );
-    setText(clone, "[data-strava-activity-secondary-label]", sport.secondary.unit);
+    setText(clone, "[data-strava-activity-secondary-label]", sport.activity.label);
     setText(clone, "[data-strava-activity-time]", formatDuration(activity.movingTimeSeconds));
 
     // The list's bottom border is the widget's own, so the last row drops its divider.

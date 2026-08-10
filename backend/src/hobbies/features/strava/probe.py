@@ -22,17 +22,18 @@ from hobbies.core.browser_session import BrowserSession
 from hobbies.core.env import DEFAULT_ENV_FILENAME, load_env_file
 from hobbies.features.strava import extractors
 from hobbies.features.strava.constants import (
-    ALL_TIME_SECTION_HEADINGS,
     GEAR_SECTION_HEADINGS,
     SESSION_FILE_NAME,
-    SPORT_SELECTOR_ATTRIBUTES,
-    SPORT_SELECTOR_KEYWORDS,
+    SPORT_TAB_TITLES,
     STRAVA_PROFILE_URL_TEMPLATE,
     STRAVA_SESSION_CHECK_URL,
     STRAVA_TRAINING_URL_TEMPLATE,
-    YEAR_SECTION_HEADINGS,
 )
-from hobbies.features.strava.page_parser import parse_activity_rows, parse_bikes, parse_sport_totals
+from hobbies.features.strava.page_parser import (
+    parse_activity_rows,
+    parse_bikes,
+    parse_sport_stats_panel,
+)
 from hobbies.features.strava.scraper import StravaCredentials
 
 OUTPUT_DIR = Path("output")
@@ -81,63 +82,26 @@ def _probe_profile(page, athlete_id: str) -> None:
         f"{bike.name}: {bike.distance_metres / 1000:.1f} km" for bike in parse_bikes(text)
     ])
 
-    _report_sport_controls(page)
+    print("\n--- SPORT STATS PANELS")
+    panels = page.evaluate(extractors.SPORT_STATS, SPORT_TAB_TITLES)
 
-    # Panel text per sport, so an unresponsive icon shows up as a duplicate.
-    panels_seen: dict[str, str] = {}
+    for sport_key, panel in panels.items():
+        if panel is None:
+            print(f"    {sport_key}: NO PANEL — no tab titled {SPORT_TAB_TITLES[sport_key]}")
+            continue
 
-    for sport_key, keywords in SPORT_SELECTOR_KEYWORDS.items():
-        clicked = page.evaluate(
-            extractors.CLICK_SPORT_CONTROL,
-            {"keywords": keywords, "attributes": SPORT_SELECTOR_ATTRIBUTES},
-        )
-        page.wait_for_timeout(SETTLE_MS)
-        print(f"\n--- sport '{sport_key}': clicked {clicked!r}")
-        _dump(page, f"probe_profile_{sport_key}.html")
-
-        for label, headings in (
-            ("YEAR", YEAR_SECTION_HEADINGS),
-            ("ALL-TIME", ALL_TIME_SECTION_HEADINGS),
-        ):
-            text = page.evaluate(extractors.SECTION_TEXT_BY_HEADING, headings)
-            _report_section(
-                f"{label} totals [{sport_key}]",
-                text,
-                lambda t: [str(parse_sport_totals(t))],
-            )
-
-            if not text:
-                continue
-            duplicate_of = panels_seen.get(f"{label}:{text}")
-            if duplicate_of:
-                print(
-                    f"    !! IDENTICAL to the {label} panel for '{duplicate_of}' — "
-                    "the sport icon did not switch anything. Fix the keywords in "
-                    "SPORT_SELECTOR_KEYWORDS using the control list above."
-                )
+        print(f"    {sport_key}: tab title={panel['title']!r} index={panel['index']} "
+              f"tbodies={len(panel['tbodies'])}")
+        year, all_time = parse_sport_stats_panel(panel)
+        for label, totals in (("year", year), ("all-time", all_time)):
+            if totals is None:
+                print(f"        {label}: NOT PARSED")
             else:
-                panels_seen[f"{label}:{text}"] = sport_key
+                print(f"        {label}: {totals.distance_metres / 1000:,.1f} km | "
+                      f"{totals.moving_time_seconds / 3600:,.1f} h | "
+                      f"count={totals.activity_count}")
 
-
-def _report_sport_controls(page) -> None:
-    """List every plausible sport switcher with its identifying attributes."""
-    print("\n--- SPORT SWITCHER CANDIDATES")
-    candidates = page.evaluate(
-        extractors.SPORT_CONTROL_CANDIDATES, SPORT_SELECTOR_ATTRIBUTES
-    )
-
-    interesting = [
-        row for row in candidates
-        if row["icons"] or row["attributes"].get("aria-label") or row["attributes"].get("title")
-    ]
-    print(f"    {len(candidates)} clickable elements, {len(interesting)} with icons or labels")
-
-    for row in interesting[:25]:
-        print(f"    <{row['tag']}> text={row['text']!r}")
-        for name, value in row["attributes"].items():
-            print(f"        {name}={value!r}")
-        for icon in row["icons"][:2]:
-            print(f"        icon: {icon}")
+    _dump(page, "probe_profile.html")
 
 
 def _probe_training(page) -> None:

@@ -14,6 +14,7 @@ actual text, then add it here as a regression case.
 
 import pytest
 
+from hobbies.features.strava.selection import classify_sport
 from hobbies.features.strava.page_parser import (
     PageParseError,
     parse_activity_rows,
@@ -115,7 +116,7 @@ Adidas Adizero 412.5 km
 class TestParseActivityRows:
 
     def _row(self, text: str, commute_markup: bool = False) -> dict:
-        return {"text": text, "commuteMarkup": commute_markup, "activityUrl": None}
+        return {"text": text, "isCommute": commute_markup, "activityUrl": None}
 
     def test_reads_name_date_distance_and_time(self):
         rows = [self._row("Weekend Loop\nJul 26, 2026\nRide\n58.1 km\n2:04:10")]
@@ -129,8 +130,8 @@ class TestParseActivityRows:
         assert activity.distance_metres == pytest.approx(58100)
         assert activity.moving_time_seconds == 7450
 
-    def test_trusts_commute_markup_over_the_name(self):
-        """An explicit commute flag wins even when the name says nothing."""
+    def test_trusts_a_checked_commute_control_over_the_name(self):
+        """A genuinely checked commute control wins even when the name says nothing."""
         rows = [self._row("Evening pootle\nJul 26, 2026\nRide\n14.0 km\n31:40", True)]
 
         assert parse_activity_rows(rows)[0].is_commute is True
@@ -154,8 +155,11 @@ class TestParseActivityRows:
 
         activities = parse_activity_rows(rows)
 
-        assert activities[0].sport == "ride"
-        assert activities[1].sport == "run"
+        # Returned verbatim from the row's sport cell; classify_sport folds case.
+        assert activities[0].sport == "Ride"
+        assert activities[1].sport == "Run"
+        assert classify_sport(activities[0].sport) == "ride"
+        assert classify_sport(activities[1].sport) == "run"
 
     def test_skips_rows_without_a_distance_rather_than_failing(self):
         """Header and spacer rows come through the same selector."""
@@ -203,3 +207,53 @@ class TestParseActivityRows:
         rows = [self._row("Jul 22, 2026\tMorning Ride\tRide\t32.4 km\t1:11:23")]
 
         assert parse_activity_rows(rows)[0].name == "Morning Ride"
+
+
+class TestRealActivityRowFormat:
+    """
+    Regression tests taken from the live training page rather than guessed at.
+
+    A real row's innerText is tab separated in this order:
+        Sport | Date | Title | Time | Distance | Elevation | controls
+    e.g. 'Ride\tMon, 8/10/2026\tMorning Ride\t59:28\t28.46 km\t250 m\t\t\nEdit Delete Share'
+
+    Every one of these cases was a live failure before the parser worked on cells.
+    """
+
+    REAL_ROW = "Ride\tMon, 8/10/2026\tMorning Ride\t59:28\t28.46 km\t250 m\t\t\nEdit Delete Share"
+
+    def _parse(self, text: str):
+        return parse_activity_rows([{"text": text, "isCommute": False, "activityUrl": None}])
+
+    def test_parses_a_real_row(self):
+        activities = self._parse(self.REAL_ROW)
+
+        assert len(activities) == 1, "the whole row was dropped"
+        activity = activities[0]
+        assert activity.name == "Morning Ride"
+        assert activity.start_date_local == "2026-08-10T00:00:00"
+        assert activity.distance_metres == pytest.approx(28460)
+        assert activity.moving_time_seconds == 3568
+
+    def test_does_not_read_elevation_as_the_duration(self):
+        """
+        '250 m' sits after the distance. Scanning forward for a duration matched it
+        as 250 minutes — 15,000 seconds instead of the real 3,568.
+        """
+        assert self._parse(self.REAL_ROW)[0].moving_time_seconds == 3568
+
+    def test_does_not_use_the_controls_cell_as_the_title(self):
+        assert "Edit" not in self._parse(self.REAL_ROW)[0].name
+
+    def test_reads_a_commute_from_its_name(self):
+        row = "Ride\tThu, 8/7/2026\tMorning Commute\t21:28\t7.55 km\t60 m\t\t\nEdit Delete Share"
+
+        activity = self._parse(row)[0]
+        assert activity.name == "Morning Commute"
+        assert activity.is_commute is True
+
+    def test_ignores_the_hidden_edit_form_rows(self):
+        """Each activity ships a hidden edit form that matches the same selector."""
+        form_row = "Title\n\n\n\nSport\nRide\nRun\nHike\nSwim\nWalk\nTrail Run"
+
+        assert self._parse(form_row) == []

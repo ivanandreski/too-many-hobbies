@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Mock staged login</title>
+  <style>
+    .hidden { display: none; }
+    #banner { position: fixed; inset: auto 0 0 0; background: #eee; padding: 1rem; z-index: 10; }
+  </style>
+</head>
+<body>
+  <!--
+    Reproduces the shape of Strava's login rather than its markup: three stages,
+    a consent overlay, a duplicated email field where the hidden one comes first,
+    and a bot-trap input beside it.
+
+    The traps are the point. A test that passes here proves the driver targets
+    visible elements, leaves the honeypot alone, and finds the switch to password
+    entry — the three things that would otherwise only surface against the real
+    site with real credentials.
+  -->
+  <div id="banner">
+    We use cookies.
+    <button id="CybotCookiebotDialogBodyButtonDecline">Reject Non-Essential</button>
+    <button id="CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll">Accept All</button>
+  </div>
+
+  <!-- Dropped on the re-render after the first rejection, as Strava's are. -->
+  <div id="social">
+    <button type="button">Sign In With Google</button>
+    <button type="button">Sign In With Apple</button>
+  </div>
+
+  <div id="form-error" role="alert" class="hidden"></div>
+
+  <!-- Stage 1: email only. The mobile copy is hidden and comes first. -->
+  <form id="stage-email" onsubmit="return false">
+    <input type="email" name="email" id="mobile-email" class="hidden" placeholder="Your Email">
+    <input type="text" name="country" id="mobile-country" class="hidden" autocomplete="new-password">
+    <input type="email" name="email" id="desktop-email" placeholder="Your Email">
+    <input type="text" name="country" id="desktop-country" autocomplete="new-password">
+    <button type="submit" id="desktop-login-button">Log In</button>
+  </form>
+
+  <!-- Stage 2: a one-time code is offered; password entry must be chosen. -->
+  <div id="stage-choice" class="hidden">
+    <p>We sent a one-time code to your email. Enter it below, or use your password.</p>
+    <input type="text" id="otp-code" placeholder="Verification code">
+    <!--
+      Hidden mobile duplicate, FIRST in the DOM — this page ships one of these for
+      every control, and it is why matching has to be visible-only: `.first`
+      otherwise resolves to a copy nobody can see.
+    -->
+    <button type="button" id="mobile-switch-to-password" style="display:none">Use password instead</button>
+    <button type="button" id="switch-to-password">Use password instead</button>
+  </div>
+
+  <!-- Stage 3: the password field, which only exists after that choice. -->
+  <form id="stage-password" class="hidden" onsubmit="return false">
+    <input type="password" name="password" id="desktop-password" placeholder="Password">
+    <!-- Visually hidden, like a custom-styled checkbox, so check() cannot click it. -->
+    <input type="checkbox" name="desktop_remember_me" id="desktop_remember_me" style="display:none">
+    <button type="submit" id="password-login-button">Log In</button>
+  </form>
+
+  <div id="result" class="hidden"></div>
+
+  <script>
+    const show = (id, on) => document.getElementById(id).classList.toggle('hidden', !on);
+    // Records what the driver actually did, for the test to assert against.
+    window.__log = { bannerDismissed: false, emailSubmitted: null,
+                     passwordSubmitted: null, rememberMe: null, emailAttempts: 0,
+                     clickedHiddenSwitch: false, clickedVisibleSwitch: false };
+    // How many submissions to reject before accepting. Tests override this.
+    window.__failEmailAttempts = 2;
+    // Delay before the one-time-code screen appears. Tests raise this.
+    window.__choiceDelayMs = 0;
+
+    for (const id of ['CybotCookiebotDialogBodyButtonDecline',
+                      'CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll']) {
+      document.getElementById(id).addEventListener('click', () => {
+        window.__log.bannerDismissed = true;
+        document.getElementById('banner').remove();
+      });
+    }
+
+    // Strava rejects the first email submission with a generic error, re-renders
+    // without the social buttons, and accepts the same address next time. The
+    // retry in submit_email exists for exactly this, so the mock reproduces it.
+    let emailAttempts = 0;
+    document.getElementById('desktop-login-button').addEventListener('click', () => {
+      emailAttempts++;
+      window.__log.emailAttempts = emailAttempts;
+
+      if (emailAttempts < window.__failEmailAttempts) {
+        document.getElementById('social')?.remove();
+        const err = document.getElementById('form-error');
+        err.textContent = 'An unexpected error occurred. Please try again.';
+        show('form-error', true);
+        document.getElementById('desktop-email').value = '';
+        return;
+      }
+
+      show('form-error', false);
+      window.__log.emailSubmitted = document.getElementById('desktop-email').value;
+      show('stage-email', false);
+      // Mounted after a delay when asked, to mimic a client-rendered screen — the
+      // case where a non-waiting visibility check reports the button missing.
+      setTimeout(() => show('stage-choice', true), window.__choiceDelayMs || 0);
+    });
+
+    // Records a wrong click on the hidden copy, so a test can prove we avoided it.
+    document.getElementById('mobile-switch-to-password').addEventListener('click', () => {
+      window.__log.clickedHiddenSwitch = true;
+    });
+
+    document.getElementById('switch-to-password').addEventListener('click', () => {
+      window.__log.clickedVisibleSwitch = true;
+      show('stage-choice', false);
+      show('stage-password', true);
+    });
+
+    document.getElementById('password-login-button').addEventListener('click', () => {
+      window.__log.passwordSubmitted = document.getElementById('desktop-password').value;
+      window.__log.rememberMe = document.getElementById('desktop_remember_me').checked;
+      show('stage-password', false);
+      const r = document.getElementById('result');
+      r.textContent = 'Signed in';
+      show('result', true);
+    });
+  </script>
+</body>
+</html>

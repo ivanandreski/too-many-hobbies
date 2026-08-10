@@ -94,6 +94,54 @@ CLICK_SPORT_CONTROL = """
 }
 """
 
+# Reads the per-sport stats panels off the profile page.
+#
+# No clicking involved, and no text anchors. The page ships one panel per sport —
+# `div.sport-0`, `div.sport-1`, … — with all of them already in the DOM and only
+# the active one displayed. Each panel holds `tbody#sport-N-ytd` for the selected
+# year and, after an "All-Time" header row, the lifetime totals. A tab button
+# `button.sport-N-tab[title="Ride"]` names each index.
+#
+# Two consequences worth stating: the sport switcher never needs to be operated,
+# and textContent must be used rather than innerText, because innerText returns
+# empty for the hidden panels.
+SPORT_STATS = """
+(sportTitles) => {
+    const tabs = [...document.querySelectorAll('button[title]')]
+        .filter((button) => /sport-\\d+-tab/.test(button.className));
+
+    const readTbodies = (panel) =>
+        [...panel.querySelectorAll('tbody')].map((tbody) => ({
+            id: tbody.id || '',
+            rows: [...tbody.querySelectorAll('tr')].map((row) =>
+                [...row.querySelectorAll('th,td')]
+                    .map((cell) => (cell.textContent || '').replace(/\\s+/g, ' ').trim())
+                    .filter(Boolean)
+            ),
+        }));
+
+    const result = {};
+    for (const [sportKey, titles] of Object.entries(sportTitles)) {
+        const wanted = titles.map((title) => title.toLowerCase());
+        const tab = tabs.find((button) =>
+            wanted.includes((button.getAttribute('title') || '').trim().toLowerCase()));
+
+        if (!tab) { result[sportKey] = null; continue; }
+
+        const index = tab.className.match(/sport-(\\d+)-tab/)[1];
+        const panel = document.querySelector('.sport-' + index);
+        if (!panel) { result[sportKey] = null; continue; }
+
+        result[sportKey] = {
+            index: Number(index),
+            title: tab.getAttribute('title'),
+            tbodies: readTbodies(panel),
+        };
+    }
+    return result;
+}
+"""
+
 # Diagnostic: lists everything that looks like a sport switcher, with the
 # attributes that identify it. Used by probe.py to work out the right keywords
 # when CLICK_SPORT_CONTROL comes back null.
@@ -128,6 +176,28 @@ SPORT_CONTROL_CANDIDATES = """
 }
 """
 
+# True once the activity list has actually arrived.
+#
+# The sport-filtered list is fetched client-side and renders a single "Loading…"
+# row first. A fixed wait is not enough: the ride list is far larger than the run
+# list and took longer than the settle time, so filtering by Ride appeared to
+# return an empty history.
+#
+# A genuine "no results" page also counts as ready, so an empty filter does not
+# stall until the timeout.
+ACTIVITY_ROWS_READY = """
+() => {
+    const body = document.body ? (document.body.innerText || '') : '';
+    if (/no results|no activities|nothing to show/i.test(body)) return true;
+
+    const rows = [...document.querySelectorAll('table tbody tr')];
+    if (rows.length === 0) return false;
+
+    const text = rows.map((row) => row.innerText || '').join(' ');
+    return !/loading/i.test(text);
+}
+"""
+
 # Returns one entry per activity row on the training page. `text` is the row's
 # visible text; `commuteMarkup` flags a commute indicator found in the row's
 # markup (icon class, title attribute or badge), which page_parser trusts over
@@ -156,9 +226,19 @@ ACTIVITY_ROWS = """
     return rows.map((row) => {
         const markup = row.innerHTML || '';
         const link = row.querySelector('a[href*="/activities/"]');
+
+        // Strict on purpose. Testing the markup for the word "commute" flagged
+        // every row: each carries a hidden edit form containing an unchecked
+        // "Commute" tag checkbox, and the page has a commute filter besides. Only
+        // a genuinely checked control counts; otherwise the activity's own name
+        // decides, which is what page_parser falls back to.
+        const commuteInput = row.querySelector(
+            'input[value="Commute" i]:checked, input[name*="commute" i]:checked'
+        );
+
         return {
             text: (row.innerText || '').trim(),
-            commuteMarkup: /commute/i.test(markup),
+            isCommute: Boolean(commuteInput),
             activityUrl: link ? link.getAttribute('href') : null,
             markupSample: markup.slice(0, MAX_MARKUP),
         };

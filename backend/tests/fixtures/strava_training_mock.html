@@ -27,13 +27,21 @@
       <tr class="c-t02">
         <td>Jul 28, 2026</td><td>Evening pootle</td><td>Ride</td>
         <td>14.0 km</td><td>31:40</td>
-        <td><span class="c-badge" title="Commute">commute</span></td>
+        <!-- A genuinely checked control. An unchecked one, or the mere word
+             "Commute" in the markup, must NOT count: the real page carries a
+             hidden edit form with an unchecked commute checkbox on every row. -->
+        <td><input type="checkbox" name="activity[tags][]" value="Commute" checked></td>
       </tr>
       <tr class="c-t02">
         <td>Jul 27, 2026</td><td>Commute to work</td><td>Ride</td><td>14.2 km</td><td>33:01</td>
       </tr>
       <tr class="c-t02">
         <td>Jul 25, 2026</td><td>Long Run</td><td>Run</td><td>12.1 km</td><td>1:06:33</td>
+      </tr>
+      <!-- An unchecked commute box, as every real row has. Must not be flagged. -->
+      <tr class="c-t02">
+        <td>Jul 23, 2026</td><td>Lunch Ride</td><td>Ride</td><td>18.4 km</td><td>44:02</td>
+        <td><input type="checkbox" name="activity[tags][]" value="Commute"></td>
       </tr>
       <tr class="c-t02">
         <td>Jul 24, 2026</td><td>Pool session</td><td>Swim</td><td>1.5 km</td><td>40:12</td>

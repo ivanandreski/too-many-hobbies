@@ -4,14 +4,9 @@
     "period": "This Year",
     "countLabel": "Runs",
     "summary": {
-      "distanceMetres": 318000,
-      "movingTimeSeconds": 100230,
-      "activityCount": 41
-    },
-    "allTime": {
-      "distanceMetres": 2110000,
-      "movingTimeSeconds": 700000,
-      "activityCount": 260
+      "distanceMetres": 142100,
+      "movingTimeSeconds": 44880,
+      "activityCount": 26
     },
     "groups": [
       {
@@ -20,36 +15,41 @@
         "activities": [
           {
             "name": "Evening Run",
-            "startDateLocal": "2026-07-25T00:00:00",
-            "distanceMetres": 8200,
-            "movingTimeSeconds": 2558
-          },
-          {
-            "name": "Easy Run",
-            "startDateLocal": "2026-07-21T00:00:00",
-            "distanceMetres": 5000,
-            "movingTimeSeconds": 1490
-          },
-          {
-            "name": "Long Run",
             "startDateLocal": "2026-07-18T00:00:00",
-            "distanceMetres": 12100,
-            "movingTimeSeconds": 3993
+            "distanceMetres": 5000,
+            "movingTimeSeconds": 1575
           },
           {
-            "name": "Tempo Run",
-            "startDateLocal": "2026-07-14T00:00:00",
-            "distanceMetres": 6500,
-            "movingTimeSeconds": 1982
+            "name": "Evening Run",
+            "startDateLocal": "2026-06-20T00:00:00",
+            "distanceMetres": 5000,
+            "movingTimeSeconds": 1397
           },
           {
-            "name": "Recovery Jog",
-            "startDateLocal": "2026-07-11T00:00:00",
-            "distanceMetres": 4200,
-            "movingTimeSeconds": 1428
+            "name": "Evening Run",
+            "startDateLocal": "2026-06-14T00:00:00",
+            "distanceMetres": 10000,
+            "movingTimeSeconds": 3156
+          },
+          {
+            "name": "Afternoon Run",
+            "startDateLocal": "2026-06-04T00:00:00",
+            "distanceMetres": 10000,
+            "movingTimeSeconds": 3220
+          },
+          {
+            "name": "Evening Run",
+            "startDateLocal": "2026-05-30T00:00:00",
+            "distanceMetres": 5000,
+            "movingTimeSeconds": 1645
           }
         ]
       }
-    ]
+    ],
+    "allTime": {
+      "distanceMetres": 389700,
+      "movingTimeSeconds": 130260,
+      "activityCount": 73
+    }
   }
 }

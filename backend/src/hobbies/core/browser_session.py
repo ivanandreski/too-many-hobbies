@@ -47,10 +47,26 @@ class BrowserSession:
         session_path: str | Path,
         headless: bool = True,
         timeout_ms: int = DEFAULT_TIMEOUT_MS,
+        fresh: bool = False,
     ) -> None:
+        """
+        Args:
+            session_path: Where the cookie jar is read from and written to.
+            headless:     Whether to show the browser.
+            timeout_ms:   Default per-action timeout.
+            fresh:        Start with an empty jar, ignoring any stored session.
+
+        A Playwright context is already incognito-like: nothing is written to a
+        browser profile on disk. The only persistence is the storage state this
+        class restores — and restoring a stale one onto a login page brings back
+        old localStorage, which can repopulate form fields with junk. `fresh`
+        skips the restore for exactly that case, while still allowing the result
+        to be saved afterwards.
+        """
         self._session_path = Path(session_path)
         self._headless = headless
         self._timeout_ms = timeout_ms
+        self._fresh = fresh
         self._playwright = None
         self._browser = None
         self._context = None
@@ -59,6 +75,10 @@ class BrowserSession:
     def has_saved_session(self) -> bool:
         """Whether a stored session exists to restore from."""
         return self._session_path.is_file()
+
+    @property
+    def _restores_session(self) -> bool:
+        return self.has_saved_session and not self._fresh
 
     def __enter__(self) -> "BrowserSession":
         try:
@@ -74,7 +94,7 @@ class BrowserSession:
         self._context = self._browser.new_context(
             viewport=DEFAULT_VIEWPORT,
             user_agent=DESKTOP_USER_AGENT,
-            storage_state=str(self._session_path) if self.has_saved_session else None,
+            storage_state=str(self._session_path) if self._restores_session else None,
         )
         self._context.set_default_timeout(self._timeout_ms)
         return self
@@ -85,17 +105,17 @@ class BrowserSession:
         exc_value: BaseException | None,
         traceback: TracebackType | None,
     ) -> None:
-        # Save even when the body raised: a login may have succeeded before the
-        # failure, and throwing that away would force another interactive sign-in.
-        try:
-            self.save_session()
-        finally:
-            if self._context:
-                self._context.close()
-            if self._browser:
-                self._browser.close()
-            if self._playwright:
-                self._playwright.stop()
+        # Deliberately does NOT save. Saving here once seemed helpful — a login
+        # might have succeeded before a later failure — but it cuts the wrong way:
+        # a run that ends logged out would overwrite a perfectly good stored
+        # session with an empty one, silently costing another interactive sign-in.
+        # Callers save explicitly, only once they have confirmed they are logged in.
+        if self._context:
+            self._context.close()
+        if self._browser:
+            self._browser.close()
+        if self._playwright:
+            self._playwright.stop()
 
     def new_page(self):
         """Open a new tab in the shared, cookie-bearing context."""
