@@ -37,6 +37,10 @@ from hobbies.features.strava.scraper import StravaScraper
 REPO_ROOT = Path(__file__).resolve().parents[3]
 FRONTEND_DATA_DIR = REPO_ROOT / "frontend" / "data"
 
+# Route thumbnails are the one generated *asset* rather than generated data, so
+# they go beside the site's other images instead of under data/.
+FRONTEND_ROUTE_MAPS_DIR = REPO_ROOT / "frontend" / "assets" / "strava" / "routes"
+
 
 @dataclass(frozen=True)
 class Feature:
@@ -137,7 +141,30 @@ def build_argument_parser() -> argparse.ArgumentParser:
         help="Run Strava scraping in a visible browser. Useful when a scrape "
              "fails and you want to watch what the page does.",
     )
+    parser.add_argument(
+        "--skip-route-maps",
+        action="store_true",
+        help="Do not capture route map thumbnails for the activity lists. They "
+             "are the slowest part of a Strava scrape — one page load and a tile "
+             "fetch each — so skipping them is useful when only the numbers "
+             "matter. Previously captured images are left in place.",
+    )
     return parser
+
+
+def resolve_route_maps_dir(output_path: Path | None, skip: bool) -> Path | None:
+    """
+    Decide where route thumbnails go, or None to not capture any.
+
+    --out exists to inspect a result before it lands on the real site, so a run
+    using it must not write images into frontend/assets as a side effect. Those
+    runs get a routes/ directory beside their output file instead.
+    """
+    if skip:
+        return None
+    if output_path is not None:
+        return output_path.parent / "routes"
+    return FRONTEND_ROUTE_MAPS_DIR
 
 
 def run(
@@ -145,6 +172,7 @@ def run(
     username: str | None,
     output_path: Path | None,
     show_browser: bool = False,
+    skip_route_maps: bool = False,
 ) -> None:
     """Run each named pipeline in turn, writing to its default or given path."""
     if output_path is not None and len(feature_names) > 1:
@@ -161,7 +189,10 @@ def run(
     # One scraper shared by every Strava feature: one login, one pass over the
     # pages, regardless of how many files are being generated.
     scraper = (
-        StravaScraper(headless=not show_browser)
+        StravaScraper(
+            headless=not show_browser,
+            route_maps_dir=resolve_route_maps_dir(output_path, skip_route_maps),
+        )
         if any(FEATURES[name].needs_strava for name in feature_names)
         else None
     )
@@ -192,6 +223,7 @@ def main() -> None:
         username=arguments.username,
         output_path=arguments.out,
         show_browser=arguments.show_browser,
+        skip_route_maps=arguments.skip_route_maps,
     )
 
 

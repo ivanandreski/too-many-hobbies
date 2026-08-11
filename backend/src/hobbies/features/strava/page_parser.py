@@ -55,6 +55,11 @@ _ELEVATION_CELL = re.compile(r"^\d[\d,\s]*(?:\.\d+)?\s*m$", re.IGNORECASE)
 # Cells that are row controls rather than data.
 _ACTION_CELL = re.compile(r"^(?:edit|delete|share)(?:\s+(?:edit|delete|share))*$", re.IGNORECASE)
 
+# The numeric id in an activity link, e.g. "/activities/19676568129". Rows carry
+# several such links — the title, and an "/activities/<id>/edit" control — and all
+# of them agree on the id, so the first match is safe.
+_ACTIVITY_ID_IN_URL = re.compile(r"/activities/(\d+)")
+
 # Durations inside a mixed line: "12h 34m", "1:11:23", "42:38".
 _DURATION_IN_LINE = re.compile(
     r"(?:\d+\s*h\s*\d*\s*m?(?:\s*\d+\s*s)?|\d+\s*m\s*\d*\s*s?|\d{1,2}:\d{2}(?::\d{2})?)",
@@ -333,7 +338,23 @@ def _parse_activity_row(row: dict) -> RawActivity | None:
         moving_time_seconds=parse_duration_seconds(duration_cell) if duration_cell else 0,
         sport=_activity_sport(cells),
         is_commute=bool(row.get("isCommute")) or _looks_like_commute(name),
+        activity_id=parse_activity_id(row.get("activityUrl")),
     )
+
+
+def parse_activity_id(activity_url: str | None) -> str | None:
+    """
+    Pull Strava's numeric activity id out of a row's link.
+
+    Returns None for a missing or unrecognisable link rather than raising: the id
+    is only needed to capture a route map, and an activity without one should
+    still be published as text.
+    """
+    if not activity_url:
+        return None
+
+    match = _ACTIVITY_ID_IN_URL.search(activity_url)
+    return match.group(1) if match else None
 
 
 def _row_cells(row_text: str) -> list[str]:

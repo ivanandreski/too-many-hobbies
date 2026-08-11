@@ -17,31 +17,36 @@
             "name": "Evening Run",
             "startDateLocal": "2026-07-18T00:00:00",
             "distanceMetres": 5000,
-            "movingTimeSeconds": 1575
+            "movingTimeSeconds": 1575,
+            "routeImage": "/assets/strava/routes/19366668657.jpg"
           },
           {
             "name": "Evening Run",
             "startDateLocal": "2026-06-20T00:00:00",
             "distanceMetres": 5000,
-            "movingTimeSeconds": 1397
+            "movingTimeSeconds": 1397,
+            "routeImage": "/assets/strava/routes/19000086913.jpg"
           },
           {
             "name": "Evening Run",
             "startDateLocal": "2026-06-14T00:00:00",
             "distanceMetres": 10000,
-            "movingTimeSeconds": 3156
+            "movingTimeSeconds": 3156,
+            "routeImage": "/assets/strava/routes/18920630206.jpg"
           },
           {
             "name": "Afternoon Run",
             "startDateLocal": "2026-06-04T00:00:00",
             "distanceMetres": 10000,
-            "movingTimeSeconds": 3220
+            "movingTimeSeconds": 3220,
+            "routeImage": "/assets/strava/routes/18786047989.jpg"
           },
           {
             "name": "Evening Run",
             "startDateLocal": "2026-05-30T00:00:00",
             "distanceMetres": 5000,
-            "movingTimeSeconds": 1645
+            "movingTimeSeconds": 1645,
+            "routeImage": "/assets/strava/routes/18718153154.jpg"
           }
         ]
       }

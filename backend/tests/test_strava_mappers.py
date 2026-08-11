@@ -28,7 +28,12 @@ ROLE_CONFIGS = [
 ]
 
 
-def activity(name: str, sport: str, is_commute: bool = False) -> RawActivity:
+def activity(
+    name: str,
+    sport: str,
+    is_commute: bool = False,
+    activity_id: str | None = None,
+) -> RawActivity:
     return RawActivity(
         name=name,
         start_date_local="2026-07-26T00:00:00",
@@ -36,6 +41,7 @@ def activity(name: str, sport: str, is_commute: bool = False) -> RawActivity:
         moving_time_seconds=7450,
         sport=sport,
         is_commute=is_commute,
+        activity_id=activity_id,
     )
 
 
@@ -195,3 +201,64 @@ class TestMissingTotals:
         partial.all_time_totals = {}
 
         assert "allTime" not in build_cycling_payload(partial, TARGETS)
+
+
+class TestRouteImages:
+    """
+    routeImage is what lets the widget tell five "Evening Ride" rows apart, so
+    the schema contract matters: always present, path or null, never missing.
+    """
+
+    def test_attaches_the_captured_image_path_by_activity_id(self):
+        harvest = ScrapedStrava(
+            year_totals={"ride": RawSportTotals(3240000, 417900, 94)},
+            activities=[activity("Weekend Loop", "ride", activity_id="19676568129")],
+            route_maps={"19676568129": "/assets/strava/routes/19676568129.jpg"},
+        )
+
+        payload = build_cycling_payload(harvest, TARGETS)
+        first = payload["groups"][0]["activities"][0]
+
+        assert first["routeImage"] == "/assets/strava/routes/19676568129.jpg"
+
+    def test_emits_null_when_no_map_was_captured(self):
+        """
+        An indoor ride has no GPS trace, so it never gets a picture. The key must
+        still be there — the widget branches on the value, not on its presence.
+        """
+        harvest = ScrapedStrava(
+            year_totals={"ride": RawSportTotals(3240000, 417900, 94)},
+            activities=[activity("Zwift session", "ride", activity_id="19676568130")],
+            route_maps={},
+        )
+
+        payload = build_cycling_payload(harvest, TARGETS)
+        first = payload["groups"][0]["activities"][0]
+
+        assert "routeImage" in first
+        assert first["routeImage"] is None
+
+    def test_emits_null_for_an_activity_with_no_id(self):
+        """A row that rendered without a link cannot be matched to an image."""
+        harvest = ScrapedStrava(
+            year_totals={"ride": RawSportTotals(3240000, 417900, 94)},
+            activities=[activity("Weekend Loop", "ride", activity_id=None)],
+            route_maps={"19676568129": "/assets/strava/routes/19676568129.jpg"},
+        )
+
+        payload = build_cycling_payload(harvest, TARGETS)
+
+        assert payload["groups"][0]["activities"][0]["routeImage"] is None
+
+    def test_runs_carry_their_images_too(self):
+        harvest = ScrapedStrava(
+            year_totals={"run": RawSportTotals(318000, 100230, 41)},
+            activities=[activity("Long Run", "run", activity_id="19366668657")],
+            route_maps={"19366668657": "/assets/strava/routes/19366668657.jpg"},
+        )
+
+        payload = build_running_payload(harvest, TARGETS)
+
+        assert payload["groups"][0]["activities"][0]["routeImage"] == (
+            "/assets/strava/routes/19366668657.jpg"
+        )

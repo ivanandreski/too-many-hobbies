@@ -246,6 +246,67 @@ ACTIVITY_ROWS = """
 }
 """
 
+# Squares the activity map's container before the map is created.
+#
+# Unlike everything else in this module this is *page source*, injected at
+# document-start rather than evaluated afterwards, and the difference is the whole
+# point. The desktop layout gives the map a wide, short container (1035x350 on this
+# account) and Strava fits the route to whatever shape it finds. Squaring the
+# container after the fact does not re-fit: the canvas resizes around the same
+# centre and zoom, which crops. That silently cut both ends off every east-west
+# route while leaving north-south ones looking fine.
+#
+# Sizing the container before the map boots means the route is fitted to a square
+# in the first place, so nothing is cropped in any orientation.
+#
+# The container does not exist yet at document-start, hence the MutationObserver.
+# The parent is sized too, or it keeps constraining the container. __SIDE__ is
+# substituted by the caller.
+SIZE_MAP_AT_BOOT = """
+(() => {
+    const side = __SIDE__;
+
+    const size = (element) => {
+        if (!element) return;
+        element.style.setProperty('width', side + 'px', 'important');
+        element.style.setProperty('height', side + 'px', 'important');
+        element.style.setProperty('min-width', '0', 'important');
+        element.style.setProperty('max-width', 'none', 'important');
+        element.style.setProperty('flex', 'none', 'important');
+    };
+
+    const apply = () => {
+        const container = document.querySelector('[data-testid="mre-map-container"]');
+        if (!container) return false;
+        size(container);
+        size(container.parentElement);
+        return true;
+    };
+
+    if (apply()) return;
+
+    const observer = new MutationObserver(() => { if (apply()) observer.disconnect(); });
+    observer.observe(document.documentElement || document, {childList: true, subtree: true});
+})()
+"""
+
+# Gives the map canvas keyboard focus, so "-" reaches Mapbox's own zoom handler.
+#
+# Focused programmatically rather than by clicking: a click lands at a point and
+# shifts the view towards it, which pushed routes off-centre and cropped them
+# again. The canvas carries tabindex="0", so it can take focus directly.
+#
+# Returns whether the canvas actually holds focus, so a silent failure to zoom
+# does not look like a successful capture.
+FOCUS_MAP_CANVAS = """
+() => {
+    const canvas = document.querySelector('canvas[data-testid="mre-canvas"]');
+    if (!canvas) return false;
+    canvas.focus();
+    return document.activeElement === canvas;
+}
+"""
+
 # Diagnostic only: used by probe.py to report what a page actually contains when
 # the extractors above come back empty.
 PAGE_OUTLINE = """

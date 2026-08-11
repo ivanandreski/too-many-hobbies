@@ -19,6 +19,11 @@
 // The JSON files hold raw Strava values — metres, seconds, local ISO timestamps —
 // and every displayed number is derived here. That keeps a single source of
 // truth for each fact, so distance and speed can never disagree.
+//
+// Each activity also carries a routeImage: a small photograph of its route on a
+// map, captured at scrape time and committed as a static asset. Five rows named
+// "Evening Ride" are indistinguishable as text, which is what the pictures are
+// there to fix. It is null for anything recorded without GPS.
 
 const SECONDS_PER_MINUTE = 60;
 const SECONDS_PER_HOUR = 3600;
@@ -193,6 +198,7 @@ const renderActivities = (widgetEl, sport, activities) => {
     );
     setText(clone, "[data-strava-activity-secondary-label]", sport.activity.label);
     setText(clone, "[data-strava-activity-time]", formatDuration(activity.movingTimeSeconds));
+    renderRouteMap(clone, activity);
 
     // The list's bottom border is the widget's own, so the last row drops its divider.
     if (index === activities.length - 1) {
@@ -202,6 +208,36 @@ const renderActivities = (widgetEl, sport, activities) => {
 
     containerEl.appendChild(clone);
   });
+};
+
+// The route thumbnail, and the dot it replaces.
+//
+// Every row ships both, and exactly one is shown: an activity recorded without
+// GPS — an indoor ride, a treadmill run — has no route to draw, and a row that
+// silently lost its left-hand element would sit out of line with its neighbours.
+//
+// The alt text names the activity rather than describing the picture. A route
+// shape cannot be usefully described in words, and the title is already in the
+// row beside it, so a screen reader gets the useful fact and no duplication.
+const renderRouteMap = (rowEl, activity) => {
+  const figureEl = rowEl.querySelector("[data-strava-activity-map]");
+  const imageEl = rowEl.querySelector("[data-strava-activity-map-image]");
+  const dotEl = rowEl.querySelector("[data-strava-activity-dot]");
+
+  if (!figureEl || !imageEl) return;
+
+  if (!activity.routeImage) {
+    figureEl.hidden = true;
+    return;
+  }
+
+  // Through the same `prefix` as fetchJsonData and hifi.js: GitHub Pages serves
+  // the site from a subpath, so the stored root-relative path would resolve
+  // outside the site and 404.
+  imageEl.src = prefix + activity.routeImage;
+  imageEl.alt = `Route of ${activity.name}`;
+  figureEl.hidden = false;
+  if (dotEl) dotEl.hidden = true;
 };
 
 // Switching tabs re-renders the list, so previously appended rows must go. The

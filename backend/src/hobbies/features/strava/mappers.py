@@ -152,7 +152,8 @@ def _build_sport_payload(
                 "key": group_key,
                 "label": GROUP_LABELS.get(group_key, group_key.title()),
                 "activities": [
-                    _map_activity(activity) for activity in selected.get(group_key, [])
+                    _map_activity(activity, scraped.route_maps)
+                    for activity in selected.get(group_key, [])
                 ],
             }
             for group_key in group_keys
@@ -184,12 +185,22 @@ def _map_totals(totals: RawSportTotals | None) -> dict:
     }
 
 
-def _map_activity(activity: RawActivity) -> dict:
+def _map_activity(activity: RawActivity, route_maps: dict[str, str] | None = None) -> dict:
+    """
+    Map one activity, attaching its route image when one was captured.
+
+    routeImage is always present, as a path or null, so the widget can branch on
+    it without treating a missing key differently from a missing picture. An
+    indoor ride has no GPS and so never gets one.
+    """
+    route_maps = route_maps or {}
+
     return {
         "name": activity.name,
         "startDateLocal": activity.start_date_local,
         "distanceMetres": round(activity.distance_metres),
         "movingTimeSeconds": activity.moving_time_seconds,
+        "routeImage": route_maps.get(activity.activity_id or ""),
     }
 
 

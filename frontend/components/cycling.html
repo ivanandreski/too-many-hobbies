@@ -70,7 +70,17 @@
           <template data-strava-activity-template>
             <div class="strava-activity-row-bordered">
               <div class="strava-activity-left">
-                <div class="strava-activity-dot"></div>
+                <!--
+                  The route thumbnail. strava.js sets the src from the activity's
+                  routeImage and hides the whole figure when there is none — an
+                  indoor ride has no GPS trace to photograph — falling back to
+                  the dot so the row keeps its left margin either way.
+                -->
+                <figure class="strava-activity-map" data-strava-activity-map hidden>
+                  <img class="strava-activity-map-image" data-strava-activity-map-image alt=""
+                    loading="lazy" decoding="async" width="176" height="176">
+                </figure>
+                <div class="strava-activity-dot" data-strava-activity-dot></div>
                 <div>
                   <p class="strava-activity-title"></p>
                   <p class="strava-activity-date"></p>

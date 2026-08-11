@@ -17,6 +17,7 @@ import pytest
 from hobbies.features.strava.selection import classify_sport
 from hobbies.features.strava.page_parser import (
     PageParseError,
+    parse_activity_id,
     parse_activity_rows,
     parse_bikes,
     parse_sport_totals,
@@ -207,6 +208,55 @@ class TestParseActivityRows:
         rows = [self._row("Jul 22, 2026\tMorning Ride\tRide\t32.4 km\t1:11:23")]
 
         assert parse_activity_rows(rows)[0].name == "Morning Ride"
+
+
+class TestParseActivityId:
+    """
+    The id is what ties a row to its captured route image, so a silent None here
+    costs the activity its thumbnail.
+    """
+
+    def test_reads_the_id_from_a_full_url(self):
+        assert parse_activity_id("https://www.strava.com/activities/19676568129") == (
+            "19676568129"
+        )
+
+    def test_reads_the_id_from_a_relative_url(self):
+        assert parse_activity_id("/activities/19676568129") == "19676568129"
+
+    def test_reads_the_id_from_an_edit_url(self):
+        """Rows carry an /edit control alongside the title link; both name the id."""
+        assert parse_activity_id("/activities/19676568129/edit") == "19676568129"
+
+    def test_returns_none_for_a_missing_url(self):
+        assert parse_activity_id(None) is None
+        assert parse_activity_id("") is None
+
+    def test_returns_none_for_an_unrelated_url(self):
+        assert parse_activity_id("/athlete/training?page=2") is None
+
+    def test_attaches_the_id_to_a_parsed_row(self):
+        rows = [{
+            "text": "Ride\tMon, 8/10/2026\tMorning Ride\t59:28\t28.46 km\t250 m",
+            "isCommute": False,
+            "activityUrl": "https://www.strava.com/activities/19676568129",
+        }]
+
+        assert parse_activity_rows(rows)[0].activity_id == "19676568129"
+
+    def test_a_row_without_a_link_is_still_parsed(self):
+        """The id only buys a picture; losing it must not lose the activity."""
+        rows = [{
+            "text": "Ride\tMon, 8/10/2026\tMorning Ride\t59:28\t28.46 km\t250 m",
+            "isCommute": False,
+            "activityUrl": None,
+        }]
+
+        activities = parse_activity_rows(rows)
+
+        assert len(activities) == 1
+        assert activities[0].name == "Morning Ride"
+        assert activities[0].activity_id is None
 
 
 class TestRealActivityRowFormat:

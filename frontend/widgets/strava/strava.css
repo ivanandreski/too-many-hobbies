@@ -157,38 +157,92 @@
     color: #6D6D78;
   }
 
-  .strava-activity-row {
-    padding: 0.75rem 1.25rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
+  .strava-activity-row,
   .strava-activity-row-bordered {
     padding: 0.75rem 1.25rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 0.75rem;
+    transition: background-color 0.15s ease;
+  }
+
+  .strava-activity-row-bordered {
     border-bottom: 1px solid #F0F0F0;
+  }
+
+  /* A warm tint on hover, keyed to the Strava orange rather than a neutral grey,
+     so running a cursor down the list feels like part of the same object. */
+  .strava-activity-row:hover,
+  .strava-activity-row-bordered:hover {
+    background-color: #FFF7F3;
   }
 
   .strava-activity-left {
     display: flex;
     align-items: center;
     gap: 0.75rem;
+    /* The route thumbnail must not be squeezed by a long activity title, and the
+       title must be allowed to shrink instead. */
+    min-width: 0;
   }
 
+  /* Route thumbnail. Fixed square so a portrait route and a landscape one line
+     up down the list, and the image is cropped rather than letterboxed — the
+     capture is already square, so this only bites if one ever is not. */
+  /* 4rem, not smaller: the captures are framed wide enough to show where a ride
+     went rather than just its shape, and that context needs the pixels to read. */
+  .strava-activity-map {
+    flex-shrink: 0;
+    width: 4rem;
+    height: 4rem;
+    margin: 0;
+    border-radius: 0.625rem;
+    overflow: hidden;
+    background-color: #F0EFEA;
+    border: 1px solid #E8E8E8;
+  }
+
+  .strava-activity-map[hidden] {
+    display: none;
+  }
+
+  .strava-activity-map-image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.2s ease;
+  }
+
+  .strava-activity-row:hover .strava-activity-map-image,
+  .strava-activity-row-bordered:hover .strava-activity-map-image {
+    transform: scale(1.08);
+  }
+
+  /* Shown only when an activity has no route to draw, so the row keeps a
+     left-hand marker and stays aligned with its neighbours. */
   .strava-activity-dot {
+    flex-shrink: 0;
     width: 0.5rem;
     height: 0.5rem;
     border-radius: 50%;
     background-color: #FC4C02;
   }
 
+  .strava-activity-dot[hidden] {
+    display: none;
+  }
+
   .strava-activity-title {
     font-size: 0.875rem;
     font-weight: 600;
     color: #242428;
+    /* "Afternoon Commute" beside a thumbnail and three metrics can outgrow a
+       narrow widget; clipping the title is preferable to wrapping the row. */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .strava-activity-date {
@@ -201,6 +255,7 @@
     display: flex;
     gap: 1rem;
     text-align: right;
+    flex-shrink: 0;
   }
 
   .strava-activity-metric-value {
@@ -259,5 +314,37 @@
     text-transform: uppercase;
     letter-spacing: 0.1em;
     color: #FC4C02;
+  }
+}
+
+/*
+  Narrow widgets: a thumbnail, a title and three metrics do not fit across a
+  phone-width column.
+
+  A container query rather than a media query, because the grid in index.css
+  makes each widget slot its own query container — a widget can be 440px wide on
+  a 1600px screen, and the viewport width says nothing about that. The threshold
+  is the width at which the row starts clipping titles rather than a device size.
+*/
+@container (max-width: 24rem) {
+  .strava-widget {
+    .strava-activity-map {
+      width: 3.25rem;
+      height: 3.25rem;
+    }
+
+    .strava-activity-left {
+      gap: 0.625rem;
+    }
+
+    .strava-activity-right {
+      gap: 0.625rem;
+    }
+
+    /* Speed and pace are the derived figures, and the least missed: distance and
+       duration are what the row is for. */
+    .strava-activity-right > div:nth-child(2) {
+      display: none;
+    }
   }
 }

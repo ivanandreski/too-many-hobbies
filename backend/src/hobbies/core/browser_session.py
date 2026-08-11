@@ -14,6 +14,7 @@ The session file is a live credential: anyone holding it is logged in as you.
 Keep it out of version control.
 """
 
+from contextlib import contextmanager
 from pathlib import Path
 from types import TracebackType
 
@@ -122,6 +123,45 @@ class BrowserSession:
         if self._context is None:
             raise RuntimeError("BrowserSession must be used as a context manager")
         return self._context.new_page()
+
+    @contextmanager
+    def cloned_context(self, device_scale_factor: float = 1, init_script: str | None = None):
+        """
+        A throwaway second context sharing this session's cookies.
+
+        Exists for capturing screenshots at a higher pixel ratio than the pages
+        being read. device_scale_factor is a context-level option in Playwright —
+        it cannot be set per page — so a crisp capture otherwise means rendering
+        the *entire* scrape at 2x, which is several times the pixels for every
+        page just to sharpen a handful of images.
+
+        Args:
+            device_scale_factor: Pixel ratio for everything rendered in the clone.
+            init_script:         JavaScript *source* run before any page script on
+                                 every navigation. Note it is source and not a
+                                 function: passing "() => {...}" evaluates an arrow
+                                 function and discards it without ever calling it,
+                                 which fails silently. Wrap it as "(() => {...})()".
+
+        Cookies are copied in, and nothing is copied back out: the clone is
+        closed on exit and never written to the session file.
+        """
+        if self._context is None or self._browser is None:
+            raise RuntimeError("BrowserSession must be used as a context manager")
+
+        clone = self._browser.new_context(
+            viewport=DEFAULT_VIEWPORT,
+            user_agent=DESKTOP_USER_AGENT,
+            device_scale_factor=device_scale_factor,
+            storage_state=self._context.storage_state(),
+        )
+        clone.set_default_timeout(self._timeout_ms)
+        if init_script:
+            clone.add_init_script(init_script)
+        try:
+            yield clone
+        finally:
+            clone.close()
 
     def save_session(self) -> None:
         """Write current cookies to the session file."""

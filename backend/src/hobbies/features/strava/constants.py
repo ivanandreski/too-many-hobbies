@@ -38,6 +38,24 @@ SPORT_TYPE_FILTERS = {
 # how we detect an expired session.
 STRAVA_SESSION_CHECK_URL = f"{STRAVA_BASE_URL}/athlete/training"
 
+# A single activity, whose page renders the route on a map.
+STRAVA_ACTIVITY_URL_TEMPLATE = f"{STRAVA_BASE_URL}/activities/{{activity_id}}"
+
+# --- Activity map ---------------------------------------------------------
+# The map is a WebGL canvas, so the route cannot be read out of the markup — it
+# has to be captured as an image. These two test ids address the map; they are
+# semantic attributes rather than the hashed class names beside them
+# ("Map--map--k2M4e"), which change with every deploy.
+MAP_CONTAINER_SELECTOR = '[data-testid="mre-map-container"]'
+MAP_CANVAS_SELECTOR = 'canvas[data-testid="mre-canvas"]'
+
+# Everything else drawn over the map: zoom buttons, Create Route / GPX, the
+# basemap style picker, the scale bar, and the privacy-zone legend.
+MAP_CHROME_HIDING_CSS = """
+[data-testid="mre-map-container"] > *:not(canvas) { display: none !important; }
+[data-testid="mre-privacy-zones-legend"] { display: none !important; }
+"""
+
 # --- Login form -----------------------------------------------------------
 # Strava's login is staged: enter the email, submit, then choose "use password"
 # rather than a one-time code, then enter the password. There is no single form
