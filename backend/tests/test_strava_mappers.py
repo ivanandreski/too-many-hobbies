@@ -250,6 +250,31 @@ class TestRouteImages:
 
         assert payload["groups"][0]["activities"][0]["routeImage"] is None
 
+    def test_links_each_activity_to_its_page_on_strava(self):
+        """The widget makes rows clickable, so the payload has to carry the URL."""
+        harvest = ScrapedStrava(
+            year_totals={"ride": RawSportTotals(3240000, 417900, 94)},
+            activities=[activity("Weekend Loop", "ride", activity_id="19676568129")],
+        )
+
+        payload = build_cycling_payload(harvest, TARGETS)
+
+        assert payload["groups"][0]["activities"][0]["stravaUrl"] == (
+            "https://www.strava.com/activities/19676568129"
+        )
+
+    def test_emits_a_null_link_for_an_activity_with_no_id(self):
+        harvest = ScrapedStrava(
+            year_totals={"ride": RawSportTotals(3240000, 417900, 94)},
+            activities=[activity("Weekend Loop", "ride", activity_id=None)],
+        )
+
+        payload = build_cycling_payload(harvest, TARGETS)
+        first = payload["groups"][0]["activities"][0]
+
+        assert "stravaUrl" in first
+        assert first["stravaUrl"] is None
+
     def test_runs_carry_their_images_too(self):
         harvest = ScrapedStrava(
             year_totals={"run": RawSportTotals(318000, 100230, 41)},

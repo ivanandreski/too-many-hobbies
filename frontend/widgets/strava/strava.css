@@ -157,6 +157,8 @@
     color: #6D6D78;
   }
 
+  /* Rows are anchors, so the link colour and underline have to be reset — the
+     row styles its own text and must look identical whether or not it links. */
   .strava-activity-row,
   .strava-activity-row-bordered {
     padding: 0.75rem 1.25rem;
@@ -165,6 +167,18 @@
     justify-content: space-between;
     gap: 0.75rem;
     transition: background-color 0.15s ease;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  /* Only a row that actually points somewhere offers to be clicked. */
+  .strava-activity-row-linked {
+    cursor: pointer;
+  }
+
+  .strava-activity-row-linked:focus-visible {
+    outline: 2px solid #FC4C02;
+    outline-offset: -2px;
   }
 
   .strava-activity-row-bordered {
@@ -172,9 +186,10 @@
   }
 
   /* A warm tint on hover, keyed to the Strava orange rather than a neutral grey,
-     so running a cursor down the list feels like part of the same object. */
-  .strava-activity-row:hover,
-  .strava-activity-row-bordered:hover {
+     so running a cursor down the list feels like part of the same object. Only on
+     linked rows: a hover response on an inert row promises a click that does
+     nothing. */
+  .strava-activity-row-linked:hover {
     background-color: #FFF7F3;
   }
 
@@ -215,8 +230,7 @@
     transition: transform 0.2s ease;
   }
 
-  .strava-activity-row:hover .strava-activity-map-image,
-  .strava-activity-row-bordered:hover .strava-activity-map-image {
+  .strava-activity-row-linked:hover .strava-activity-map-image {
     transform: scale(1.08);
   }
 

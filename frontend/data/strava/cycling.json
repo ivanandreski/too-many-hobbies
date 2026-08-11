@@ -18,35 +18,40 @@
             "startDateLocal": "2026-08-10T00:00:00",
             "distanceMetres": 28460,
             "movingTimeSeconds": 3568,
-            "routeImage": "/assets/strava/routes/19676568129.jpg"
+            "routeImage": "/assets/strava/routes/19676568129.jpg",
+            "stravaUrl": "https://www.strava.com/activities/19676568129"
           },
           {
             "name": "Evening Ride",
             "startDateLocal": "2026-08-08T00:00:00",
             "distanceMetres": 31780,
             "movingTimeSeconds": 4737,
-            "routeImage": "/assets/strava/routes/19657991464.jpg"
+            "routeImage": "/assets/strava/routes/19657991464.jpg",
+            "stravaUrl": "https://www.strava.com/activities/19657991464"
           },
           {
             "name": "Evening Ride",
             "startDateLocal": "2026-08-06T00:00:00",
             "distanceMetres": 34650,
             "movingTimeSeconds": 4613,
-            "routeImage": "/assets/strava/routes/19631067717.jpg"
+            "routeImage": "/assets/strava/routes/19631067717.jpg",
+            "stravaUrl": "https://www.strava.com/activities/19631067717"
           },
           {
             "name": "Afternoon Ride",
             "startDateLocal": "2026-08-04T00:00:00",
             "distanceMetres": 28870,
             "movingTimeSeconds": 5531,
-            "routeImage": "/assets/strava/routes/19600687411.jpg"
+            "routeImage": "/assets/strava/routes/19600687411.jpg",
+            "stravaUrl": "https://www.strava.com/activities/19600687411"
           },
           {
             "name": "Evening Ride",
             "startDateLocal": "2026-08-02T00:00:00",
             "distanceMetres": 26980,
             "movingTimeSeconds": 4149,
-            "routeImage": "/assets/strava/routes/19573549204.jpg"
+            "routeImage": "/assets/strava/routes/19573549204.jpg",
+            "stravaUrl": "https://www.strava.com/activities/19573549204"
           }
         ]
       },
@@ -59,35 +64,40 @@
             "startDateLocal": "2026-08-07T00:00:00",
             "distanceMetres": 7500,
             "movingTimeSeconds": 1213,
-            "routeImage": "/assets/strava/routes/19641887076.jpg"
+            "routeImage": "/assets/strava/routes/19641887076.jpg",
+            "stravaUrl": "https://www.strava.com/activities/19641887076"
           },
           {
             "name": "Morning Commute",
             "startDateLocal": "2026-08-07T00:00:00",
             "distanceMetres": 7570,
             "movingTimeSeconds": 1288,
-            "routeImage": "/assets/strava/routes/19636493690.jpg"
+            "routeImage": "/assets/strava/routes/19636493690.jpg",
+            "stravaUrl": "https://www.strava.com/activities/19636493690"
           },
           {
             "name": "Afternoon Commute",
             "startDateLocal": "2026-08-06T00:00:00",
             "distanceMetres": 7530,
             "movingTimeSeconds": 1167,
-            "routeImage": "/assets/strava/routes/19628612512.jpg"
+            "routeImage": "/assets/strava/routes/19628612512.jpg",
+            "stravaUrl": "https://www.strava.com/activities/19628612512"
           },
           {
             "name": "Morning Commute",
             "startDateLocal": "2026-08-06T00:00:00",
             "distanceMetres": 7530,
             "movingTimeSeconds": 1348,
-            "routeImage": "/assets/strava/routes/19622475928.jpg"
+            "routeImage": "/assets/strava/routes/19622475928.jpg",
+            "stravaUrl": "https://www.strava.com/activities/19622475928"
           },
           {
             "name": "Afternoon Commute",
             "startDateLocal": "2026-08-05T00:00:00",
             "distanceMetres": 7520,
             "movingTimeSeconds": 1266,
-            "routeImage": "/assets/strava/routes/19613546003.jpg"
+            "routeImage": "/assets/strava/routes/19613546003.jpg",
+            "stravaUrl": "https://www.strava.com/activities/19613546003"
           }
         ]
       }

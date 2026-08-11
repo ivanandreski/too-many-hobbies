@@ -193,6 +193,29 @@ def _capture_one(page, activity: RawActivity, output_dir: Path, tiles: dict) -> 
     return f"{ROUTE_ASSET_URL_PREFIX}/{activity_id}{IMAGE_EXTENSION}"
 
 
+def existing_route_maps(activities: list[RawActivity], output_dir: Path) -> dict[str, str]:
+    """
+    Find already-captured images for these activities, capturing nothing.
+
+    This is what makes skipping the capture useful rather than destructive. Without
+    it a skipped run rewrites the JSON with every routeImage null, so the pictures
+    vanish from the site while their files sit untouched on disk — worse than not
+    running at all, and easy to mistake for a scraping failure.
+
+    Returns:
+        Activity id → site-relative path, for the images that are actually there.
+    """
+    found: dict[str, str] = {}
+
+    for activity in _deduplicate(activities):
+        if (output_dir / f"{activity.activity_id}{IMAGE_EXTENSION}").is_file():
+            found[activity.activity_id] = (
+                f"{ROUTE_ASSET_URL_PREFIX}/{activity.activity_id}{IMAGE_EXTENSION}"
+            )
+
+    return found
+
+
 def _zoom_out(page, tiles: dict, activity_id: str) -> None:
     """
     Pull the view back from Strava's tight fit so the surroundings are visible.

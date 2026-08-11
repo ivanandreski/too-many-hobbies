@@ -22,6 +22,7 @@ from hobbies.features.strava.config import (
 from hobbies.features.strava.constants import (
     METRES_PER_KILOMETRE,
     MILEAGE_DECIMAL_PLACES,
+    STRAVA_ACTIVITY_URL_TEMPLATE,
 )
 from hobbies.features.strava.models import RawActivity, RawBike, RawSportTotals, ScrapedStrava
 from hobbies.features.strava.selection import RIDE_SPORT_KEY, RUN_SPORT_KEY, select_for_targets
@@ -187,20 +188,27 @@ def _map_totals(totals: RawSportTotals | None) -> dict:
 
 def _map_activity(activity: RawActivity, route_maps: dict[str, str] | None = None) -> dict:
     """
-    Map one activity, attaching its route image when one was captured.
+    Map one activity, attaching its route image and its link to Strava.
 
-    routeImage is always present, as a path or null, so the widget can branch on
-    it without treating a missing key differently from a missing picture. An
-    indoor ride has no GPS and so never gets one.
+    routeImage and stravaUrl are always present, as a value or null, so the widget
+    can branch on them without treating a missing key differently from a missing
+    value. An indoor ride has no GPS and so never gets a picture; an activity whose
+    row rendered without a link has no id and so gets neither.
     """
     route_maps = route_maps or {}
+    activity_id = activity.activity_id
 
     return {
         "name": activity.name,
         "startDateLocal": activity.start_date_local,
         "distanceMetres": round(activity.distance_metres),
         "movingTimeSeconds": activity.moving_time_seconds,
-        "routeImage": route_maps.get(activity.activity_id or ""),
+        "routeImage": route_maps.get(activity_id or ""),
+        "stravaUrl": (
+            STRAVA_ACTIVITY_URL_TEMPLATE.format(activity_id=activity_id)
+            if activity_id
+            else None
+        ),
     }
 
 

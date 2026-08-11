@@ -68,7 +68,13 @@
         </div>
         <div data-strava-activities>
           <template data-strava-activity-template>
-            <div class="strava-activity-row-bordered">
+            <!--
+              An anchor rather than a div with a click handler, so an activity
+              opens with the middle button, from the keyboard, and on a long
+              press like any other link. strava.js fills in the href; without
+              one (an activity whose row had no link) it stays inert markup.
+            -->
+            <a class="strava-activity-row-bordered" data-strava-activity-link>
               <div class="strava-activity-left">
                 <!--
                   The route thumbnail. strava.js sets the src from the activity's
@@ -100,7 +106,7 @@
                   <p class="strava-activity-metric-label">Time</p>
                 </div>
               </div>
-            </div>
+            </a>
           </template>
         </div>
       </div>

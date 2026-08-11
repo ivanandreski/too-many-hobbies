@@ -15,6 +15,7 @@ from hobbies.features.strava.route_maps import (
     ROUTE_ASSET_URL_PREFIX,
     _deduplicate,
     capture_route_maps,
+    existing_route_maps,
 )
 
 
@@ -81,6 +82,50 @@ class TestCaptureGuards:
         capture_route_maps(None, [activity("Morning Ride", None)], output_dir)
 
         assert not output_dir.exists()
+
+
+class TestExistingRouteMaps:
+    """
+    Skipping the capture must not drop the pictures.
+
+    Before this existed, a skipped run rewrote the JSON with every routeImage null
+    while the image files sat untouched on disk — the maps disappeared from the site
+    and it looked like a scraping failure.
+    """
+
+    def test_references_images_that_are_on_disk(self, tmp_path):
+        (tmp_path / "1.jpg").write_bytes(b"jpeg")
+
+        found = existing_route_maps([activity("Morning Ride", "1")], tmp_path)
+
+        assert found == {"1": "/assets/strava/routes/1.jpg"}
+
+    def test_omits_activities_with_no_image(self, tmp_path):
+        (tmp_path / "1.jpg").write_bytes(b"jpeg")
+
+        found = existing_route_maps(
+            [activity("Morning Ride", "1"), activity("Evening Ride", "2")], tmp_path
+        )
+
+        assert found == {"1": "/assets/strava/routes/1.jpg"}
+
+    def test_returns_empty_for_a_directory_that_does_not_exist(self, tmp_path):
+        found = existing_route_maps([activity("Morning Ride", "1")], tmp_path / "nope")
+
+        assert found == {}
+
+    def test_paths_match_what_a_capture_would_have_produced(self, tmp_path):
+        """
+        The two code paths write the same JSON, so a skipped run and a captured run
+        differ only in freshness.
+        """
+        (tmp_path / "19676568129.jpg").write_bytes(b"jpeg")
+
+        found = existing_route_maps([activity("Morning Ride", "19676568129")], tmp_path)
+
+        assert found["19676568129"] == (
+            f"{ROUTE_ASSET_URL_PREFIX}/19676568129{IMAGE_EXTENSION}"
+        )
 
 
 class TestAssetPaths:

@@ -48,7 +48,7 @@ from hobbies.features.strava.page_parser import (
     parse_bikes,
     parse_sport_stats_panel,
 )
-from hobbies.features.strava.route_maps import capture_route_maps
+from hobbies.features.strava.route_maps import capture_route_maps, existing_route_maps
 from hobbies.features.strava.selection import (
     describe_unmet,
     select_for_targets,
@@ -110,19 +110,26 @@ class StravaScraper:
         targets: list[ActivityTarget] | None = None,
         headless: bool = True,
         route_maps_dir: str | Path | None = None,
+        capture_route_maps: bool = True,
     ) -> None:
         """
         Args:
-            route_maps_dir: Where to write route thumbnails. None disables the
-                            capture entirely, which is what tests and text-only
-                            runs want — it is by far the slowest part of a scrape,
-                            costing a page load and a tile fetch per activity.
+            route_maps_dir:     Where route thumbnails live. None means the payload
+                                carries no route images at all, which is what tests
+                                and text-only runs want.
+            capture_route_maps: Whether to photograph maps, or only reference the
+                                images already in route_maps_dir. Capturing is by
+                                far the slowest part of a scrape — a page load and
+                                a tile fetch per activity — and the routes of past
+                                activities do not change, so re-using them is the
+                                cheap way to refresh the numbers.
         """
         self._credentials = credentials
         self._session_path = Path(session_path)
         self._targets = ACTIVITY_TARGETS if targets is None else targets
         self._headless = headless
         self._route_maps_dir = Path(route_maps_dir) if route_maps_dir else None
+        self._should_capture_route_maps = capture_route_maps
         self._scraped: ScrapedStrava | None = None
 
     def scrape(self) -> ScrapedStrava:
@@ -159,11 +166,14 @@ class StravaScraper:
 
     def _capture_route_maps(self, session: BrowserSession, scraped: ScrapedStrava) -> None:
         """
-        Photograph the map of every activity that will be published.
+        Attach a route map to every activity that will be published.
 
         Deliberately driven by the targets rather than by everything scraped: the
         activity list holds up to forty rows per page, of which fifteen reach the
         site, and each capture costs a page load plus a tile fetch.
+
+        With capture disabled the images already on disk are still referenced, so
+        skipping the slow part refreshes the numbers without dropping the pictures.
         """
         if self._route_maps_dir is None:
             return
@@ -171,7 +181,17 @@ class StravaScraper:
         selected = select_for_targets(scraped.activities, self._targets)
         publishable = [activity for group in selected.values() for activity in group]
 
-        scraped.route_maps = capture_route_maps(session, publishable, self._route_maps_dir)
+        if self._should_capture_route_maps:
+            scraped.route_maps = capture_route_maps(
+                session, publishable, self._route_maps_dir
+            )
+            return
+
+        scraped.route_maps = existing_route_maps(publishable, self._route_maps_dir)
+        print(
+            f"[strava] reused {len(scraped.route_maps)}/{len(publishable)} existing "
+            "route maps (capture skipped)"
+        )
 
     def _stored_session_works(self) -> bool:
         """

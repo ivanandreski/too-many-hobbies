@@ -144,24 +144,22 @@ def build_argument_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--skip-route-maps",
         action="store_true",
-        help="Do not capture route map thumbnails for the activity lists. They "
-             "are the slowest part of a Strava scrape — one page load and a tile "
-             "fetch each — so skipping them is useful when only the numbers "
-             "matter. Previously captured images are left in place.",
+        help="Do not photograph new route maps. Capturing is the slowest part of a "
+             "Strava scrape — one page load and a tile fetch each — and past routes "
+             "do not change, so this is the quick way to refresh the numbers. "
+             "Images already on disk stay referenced by the output.",
     )
     return parser
 
 
-def resolve_route_maps_dir(output_path: Path | None, skip: bool) -> Path | None:
+def resolve_route_maps_dir(output_path: Path | None) -> Path:
     """
-    Decide where route thumbnails go, or None to not capture any.
+    Decide where route thumbnails live.
 
     --out exists to inspect a result before it lands on the real site, so a run
     using it must not write images into frontend/assets as a side effect. Those
     runs get a routes/ directory beside their output file instead.
     """
-    if skip:
-        return None
     if output_path is not None:
         return output_path.parent / "routes"
     return FRONTEND_ROUTE_MAPS_DIR
@@ -191,7 +189,8 @@ def run(
     scraper = (
         StravaScraper(
             headless=not show_browser,
-            route_maps_dir=resolve_route_maps_dir(output_path, skip_route_maps),
+            route_maps_dir=resolve_route_maps_dir(output_path),
+            capture_route_maps=not skip_route_maps,
         )
         if any(FEATURES[name].needs_strava for name in feature_names)
         else None

@@ -30,6 +30,7 @@ const SECONDS_PER_HOUR = 3600;
 const METRES_PER_KILOMETRE = 1000;
 
 const ACTIVE_TAB_CLASS = "strava-tab-active";
+const LINKED_ROW_CLASS = "strava-activity-row-linked";
 
 // Per-sport rendering rules.
 //
@@ -199,15 +200,42 @@ const renderActivities = (widgetEl, sport, activities) => {
     setText(clone, "[data-strava-activity-secondary-label]", sport.activity.label);
     setText(clone, "[data-strava-activity-time]", formatDuration(activity.movingTimeSeconds));
     renderRouteMap(clone, activity);
+    renderActivityLink(clone, activity);
 
     // The list's bottom border is the widget's own, so the last row drops its divider.
+    //
+    // classList.replace, not an assignment to className: the row may already carry
+    // the linked-row class by this point, and overwriting className would silently
+    // strip it and leave the last activity without its pointer cursor.
     if (index === activities.length - 1) {
       const rowEl = clone.querySelector(".strava-activity-row-bordered");
-      rowEl.className = "strava-activity-row";
+      rowEl.classList.replace("strava-activity-row-bordered", "strava-activity-row");
     }
 
     containerEl.appendChild(clone);
   });
+};
+
+// Points a row at its activity on Strava.
+//
+// The href is only set when the payload has a URL, because an <a> without one is
+// not focusable and not announced as a link — which is the correct outcome for a
+// row that has nowhere to go, and better than a link that looks live and does
+// nothing. The class marking a row as linked drives the affordance in CSS, so an
+// inert row does not get a pointer cursor.
+//
+// Not run through `prefix`: unlike the route images this is an absolute URL to
+// strava.com, not a path within this site.
+const renderActivityLink = (rowEl, activity) => {
+  const linkEl = rowEl.querySelector("[data-strava-activity-link]");
+  if (!linkEl || !activity.stravaUrl) return;
+
+  linkEl.href = activity.stravaUrl;
+  linkEl.target = "_blank";
+  // noopener because the opened page must not get a handle on this window;
+  // noreferrer keeps the referrer off the request.
+  linkEl.rel = "noopener noreferrer";
+  linkEl.classList.add(LINKED_ROW_CLASS);
 };
 
 // The route thumbnail, and the dot it replaces.
