@@ -179,11 +179,13 @@ const renderSpecs = (specs) => {
 // not, so photos can be added one at a time without the rack looking unfinished.
 //
 // The src goes through the same `prefix` as fetchJsonData: GitHub Pages serves
-// the site from a subpath, and a root-relative path would resolve outside it.
+// the site from a subpath, and a root-relative path would resolve outside it. It
+// is cache-busted for the same reason as the route maps — replacing a photo keeps
+// its file name, so the browser would happily keep showing the old one.
 const applyPhoto = (containerEl, imageEl, component, hasPhotoClass) => {
   if (!component.photo) return;
 
-  imageEl.src = prefix + component.photo;
+  imageEl.src = bustCache(prefix + component.photo);
   imageEl.alt = `${component.category} — ${component.name}`;
   imageEl.hidden = false;
   containerEl.classList.add(hasPhotoClass);

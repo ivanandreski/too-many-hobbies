@@ -262,7 +262,11 @@ const renderRouteMap = (rowEl, activity) => {
   // Through the same `prefix` as fetchJsonData and hifi.js: GitHub Pages serves
   // the site from a subpath, so the stored root-relative path would resolve
   // outside the site and 404.
-  imageEl.src = prefix + activity.routeImage;
+  //
+  // Cache-busted because a re-scrape rewrites these images *under the same file
+  // name* — the name is the activity id, which does not change when the picture
+  // does. Fixing a bad capture would otherwise leave the old one on screen.
+  imageEl.src = bustCache(prefix + activity.routeImage);
   imageEl.alt = `Route of ${activity.name}`;
   figureEl.hidden = false;
   if (dotEl) dotEl.hidden = true;
